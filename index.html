@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>완벽한 CLAUDE 마스터리 교재</title>
+    <title>완벽한 CLAUDE 마스터리 교재 (개별 도식화 고도화 버전)</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome for Icons -->
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -15,16 +15,11 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['Pretendard', 'sans-serif'],
-                    },
+                    fontFamily: { sans: ['Pretendard', 'sans-serif'] },
                     colors: {
                         claude: {
-                            50: '#fdf8f6',
-                            100: '#f2e8e3',
-                            500: '#e56b4f', // Adapted from image brand color
-                            600: '#d1583e',
-                            900: '#2d2d2d',
+                            50: '#fdf8f6', 100: '#f2e8e3', 200: '#fbd0c4',
+                            500: '#e56b4f', 600: '#d1583e', 900: '#2d2d2d',
                             header: '#fff4f0'
                         }
                     }
@@ -34,25 +29,33 @@
     </script>
     <style>
         body { font-family: 'Pretendard', sans-serif; background-color: #f7fafc; color: #2d2d2d; }
-        
-        /* Custom Scrollbar for the Horizontal Roadmap */
         .roadmap-scroll::-webkit-scrollbar { height: 10px; }
         .roadmap-scroll::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 8px; }
         .roadmap-scroll::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 8px; }
         .roadmap-scroll::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         
         .fade-in { animation: fadeIn 0.4s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Chapter Detail Styles */
-        .item-block { background: white; border: 1px solid #e2e8f0; border-radius: 0.75rem; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: transform 0.2s, box-shadow 0.2s; }
-        .item-block:hover { transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .item-number { display: inline-flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; background-color: #e56b4f; color: white; font-weight: bold; border-radius: 0.5rem; margin-right: 0.75rem; font-size: 0.9rem; }
-        .item-title { display: flex; align-items: center; font-size: 1.25rem; font-weight: 700; color: #2d3748; margin-bottom: 0.75rem; padding-bottom: 0.75rem; border-bottom: 1px dashed #e2e8f0; }
-        .item-desc { color: #4a5568; line-height: 1.7; font-size: 1rem; }
+        /* Accordion Styles */
+        .item-block { background: white; border: 1px solid #e2e8f0; border-radius: 0.75rem; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: all 0.3s ease; cursor: pointer; }
+        .item-block:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-color: #fbd0c4; }
+        .item-block.expanded { border-color: #e56b4f; box-shadow: 0 8px 15px rgba(229,107,79,0.1); transform: translateY(0); }
+        .item-number { display: inline-flex; align-items: center; justify-content: center; width: 2.2rem; height: 2.2rem; background-color: #e56b4f; color: white; font-weight: bold; border-radius: 0.5rem; margin-right: 0.75rem; font-size: 0.9rem; transition: all 0.3s; }
+        .item-block.expanded .item-number { background-color: #d1583e; box-shadow: 0 0 0 3px #fff4f0; }
+        .item-details { max-height: 0; overflow: hidden; transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s; opacity: 0; }
+        .item-block.expanded .item-details { max-height: 2000px; opacity: 1; margin-top: 1rem; padding-top: 1.5rem; border-top: 1px dashed #e2e8f0; }
         
-        /* Framework specific text sizes to match the dense image layout */
-        .text-xxs { font-size: 0.65rem; line-height: 1rem; }
+        .chevron-icon { transition: transform 0.3s; }
+        .item-block.expanded .chevron-icon { transform: rotate(180deg); color: #e56b4f; }
+        
+        /* Specific Diagram Base Styles */
+        .diag-box { border: 1px solid #e2e8f0; border-radius: 0.5rem; background: #fff; padding: 1.5rem; margin: 1rem 0; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .d-node { background: #fff; border: 2px solid #e56b4f; color: #d1583e; font-weight: 600; padding: 0.75rem 1rem; border-radius: 0.5rem; text-align: center; font-size: 0.85rem; box-shadow: 0 2px 4px rgba(229,107,79,0.1); }
+        .d-node-gray { background: #f8fafc; border: 2px solid #cbd5e1; color: #64748b; font-weight: 600; padding: 0.75rem 1rem; border-radius: 0.5rem; text-align: center; font-size: 0.85rem; }
     </style>
 </head>
 <body class="antialiased">
@@ -61,587 +64,450 @@
     <header class="bg-white shadow-sm sticky top-0 z-50">
         <div class="max-w-[1400px] mx-auto px-4 py-3 flex items-center justify-between">
             <div class="flex items-center gap-3 cursor-pointer" onclick="goHome()">
-                <div class="text-claude-500 text-3xl">
-                    <i class="fa-solid fa-asterisk"></i>
-                </div>
+                <div class="text-claude-500 text-3xl"><i class="fa-solid fa-asterisk"></i></div>
                 <div>
                     <h1 class="text-2xl font-black tracking-tight text-gray-900 leading-none">완벽한 CLAUDE 마스터리 로드맵</h1>
-                    <p class="text-xs text-gray-500 mt-1">초보자에서 파워 유저가 되기까지, 당신이 가야 할 유일한 로드맵</p>
+                    <p class="text-xs text-gray-500 mt-1">100단계 맞춤형 도식화 고도화 버전</p>
                 </div>
             </div>
             <div id="breadcrumb" class="hidden md:flex items-center text-sm font-medium bg-gray-100 px-4 py-2 rounded-full">
                 <span class="cursor-pointer text-gray-500 hover:text-claude-500 transition-colors" onclick="goHome()"><i class="fa-solid fa-house mr-1"></i> 메인 로드맵</span>
                 <i class="fa-solid fa-chevron-right mx-3 text-xs text-gray-400"></i>
-                <span id="current-chapter-title" class="text-claude-600 font-bold">제1장. 기초 이해</span>
+                <span id="current-chapter-title" class="text-claude-600 font-bold">제1장</span>
             </div>
         </div>
     </header>
 
-    <!-- Main Container -->
     <main class="max-w-[1400px] mx-auto px-4 py-8 min-h-screen">
-        
-        <!-- ==========================================
-             HOME VIEW: THE MASTER DASHBOARD
-             ========================================== -->
+        <!-- HOME VIEW (Roadmap Grid) -->
         <section id="home-view" class="fade-in">
-            
-            <!-- 1. The Horizontal Roadmap (Steps 1-10) -->
-            <div class="flex items-center mb-4 text-gray-800 font-bold">
-                <i class="fa-solid fa-map-location-dot text-claude-500 text-xl mr-2"></i> 10단계 마스터리 로드맵 (클릭하여 상세내용 학습)
+            <div class="flex items-center justify-between mb-4 text-gray-800 font-bold">
+                <div><i class="fa-solid fa-map-location-dot text-claude-500 text-xl mr-2"></i> 10단계 마스터리 로드맵 <span class="text-xs font-normal text-gray-500 ml-2">(각 챕터를 클릭하여 상세 도식 확인)</span></div>
             </div>
-            
             <div class="relative bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
-                <div class="flex overflow-x-auto roadmap-scroll pb-6 snap-x gap-4" id="roadmap-container">
-                    <!-- JS will inject the 10 columns here -->
-                </div>
+                <div class="flex overflow-x-auto roadmap-scroll pb-6 snap-x gap-4" id="roadmap-container"></div>
             </div>
-
-            <!-- 2. Frameworks & Structures Grid -->
+            <!-- 요약 프레임워크 5종 -->
             <div class="grid grid-cols-1 lg:grid-cols-5 gap-4 mb-4">
-                
-                <!-- 완벽한 프롬프트 공식 -->
-                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex flex-col h-full">
-                    <h3 class="text-center font-bold border-b pb-2 mb-3 text-gray-800">완벽한 프롬프트 공식</h3>
-                    <ul class="text-xs space-y-3 flex-grow">
-                        <li class="flex"><span class="font-bold w-20 text-claude-600">역할 (ROLE)</span> <span class="text-gray-600">역할 지정</span></li>
-                        <li class="flex"><span class="font-bold w-20 text-claude-600">맥락 (CONTEXT)</span> <span class="text-gray-600">배경, 전문, 상황 설명</span></li>
-                        <li class="flex"><span class="font-bold w-20 text-claude-600">과제 (TASK)</span> <span class="text-gray-600">Claude에게 원하는 작업</span></li>
-                        <li class="flex"><span class="font-bold w-20 text-claude-600">제약 (CONSTRAINTS)</span> <span class="text-gray-600">규칙, 톤, 길이, 스타일</span></li>
-                        <li class="flex"><span class="font-bold w-20 text-claude-600">형식 (FORMAT)</span> <span class="text-gray-600">출력 형식 지정</span></li>
-                    </ul>
-                    <div class="bg-gray-50 p-2 rounded text-xxs mt-3 border border-gray-100">
-                        <span class="font-bold text-gray-700 block mb-1">예시 프롬프트</span>
-                        <div class="grid grid-cols-[30px_1fr] gap-1">
-                            <span class="text-gray-500">역할:</span><span>[전문가 역할]</span>
-                            <span class="text-gray-500">맥락:</span><span>[배경/상황]</span>
-                            <span class="text-gray-500">과제:</span><span>[원하는 작업]</span>
-                            <span class="text-gray-500">제약:</span><span>[규칙/조건]</span>
-                            <span class="text-gray-500">형식:</span><span>[출력 형식]</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 아티팩트 유형 -->
-                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex flex-col h-full">
-                    <h3 class="text-center font-bold border-b pb-2 mb-3 text-gray-800">아티팩트 유형</h3>
-                    <ul class="text-xs space-y-3 flex-grow text-gray-700 font-medium">
-                        <li><i class="fa-solid fa-globe text-claude-500 w-5"></i> 웹사이트 / 랜딩 페이지</li>
-                        <li><i class="fa-solid fa-chart-line text-claude-500 w-5"></i> 대시보드 / 리포트</li>
-                        <li><i class="fa-solid fa-mobile-screen text-claude-500 w-5"></i> 미니 앱 / 도구</li>
-                        <li><i class="fa-solid fa-calculator text-claude-500 w-5"></i> 계산기</li>
-                        <li><i class="fa-solid fa-list-check text-claude-500 w-5"></i> 설문 / 폼</li>
-                        <li><i class="fa-regular fa-file-pdf text-claude-500 w-5"></i> 문서 / PDF</li>
-                        <li><i class="fa-solid fa-code text-claude-500 w-5"></i> 코드 / 프론트 엔드</li>
-                        <li><i class="fa-solid fa-diagram-project text-claude-500 w-5"></i> 다이어그램 / 플로우차트</li>
-                    </ul>
-                </div>
-
-                <!-- 스킬 구조 -->
-                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex flex-col h-full">
-                    <h3 class="text-center font-bold border-b pb-2 mb-3 text-gray-800">스킬 구조 (SKILLS)</h3>
-                    <div class="flex flex-col space-y-3 text-xs flex-grow">
-                        <div class="flex items-start"><i class="fa-solid fa-user-tie text-yellow-500 w-5 mt-0.5"></i> <div><span class="font-bold block">역할 (ROLE)</span><span class="text-gray-500 text-xxs">Claude의 전문가 역할 정의</span></div></div>
-                        <div class="flex items-start"><i class="fa-solid fa-list-ol text-yellow-500 w-5 mt-0.5"></i> <div><span class="font-bold block">규칙 (RULES)</span><span class="text-gray-500 text-xxs">Claude가 따라야 할 규칙</span></div></div>
-                        <div class="flex items-start"><i class="fa-solid fa-route text-yellow-500 w-5 mt-0.5"></i> <div><span class="font-bold block">워크플로우 (WORKFLOW)</span><span class="text-gray-500 text-xxs">단계별 프로세스</span></div></div>
-                        <div class="flex items-start"><i class="fa-solid fa-lightbulb text-yellow-500 w-5 mt-0.5"></i> <div><span class="font-bold block">예시 (EXAMPLES)</span><span class="text-gray-500 text-xxs">명확한 예시 제공</span></div></div>
-                        <div class="flex items-start"><i class="fa-solid fa-file-export text-yellow-500 w-5 mt-0.5"></i> <div><span class="font-bold block">출력 형식 (OUTPUT FORMAT)</span></div></div>
-                    </div>
-                </div>
-
-                <!-- 코워커 모드 -->
-                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex flex-col h-full">
-                    <h3 class="text-center font-bold border-b pb-2 mb-3 text-gray-800">코워커 모드</h3>
-                    <ul class="text-xs space-y-2.5 flex-grow text-gray-700 font-medium">
-                        <li><i class="fa-regular fa-lightbulb text-orange-400 w-5"></i> 아이디어 브레인스토머</li>
-                        <li><i class="fa-solid fa-chess-knight text-orange-400 w-5"></i> 전략가</li>
-                        <li><i class="fa-solid fa-magnifying-glass text-orange-400 w-5"></i> 리뷰어</li>
-                        <li><i class="fa-solid fa-book-open text-orange-400 w-5"></i> 리서처</li>
-                        <li><i class="fa-solid fa-pen-nib text-orange-400 w-5"></i> 에디터</li>
-                        <li><i class="fa-solid fa-chalkboard-user text-orange-400 w-5"></i> 선생님(티칭 파트너)</li>
-                        <li><i class="fa-regular fa-calendar-check text-orange-400 w-5"></i> 플래너</li>
-                        <li><i class="fa-solid fa-wrench text-orange-400 w-5"></i> 문제 해결사</li>
-                    </ul>
-                </div>
-
-                <!-- 연결 (커넥터) -->
-                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex flex-col h-full">
-                    <h3 class="text-center font-bold border-b pb-2 mb-3 text-gray-800">연결 (CONNECTORS)</h3>
-                    <ul class="text-xs space-y-3 flex-grow text-gray-700 font-medium">
-                        <li><i class="fa-brands fa-google-drive text-blue-500 w-5"></i> Google Drive - 파일 & 문서</li>
-                        <li><i class="fa-brands fa-github text-gray-800 w-5"></i> GitHub - 코드 저장소</li>
-                        <li><i class="fa-solid fa-n text-black w-5"></i> Notion - 워크스페이스</li>
-                        <li><i class="fa-brands fa-slack text-purple-600 w-5"></i> Slack - 대화 & 알림</li>
-                        <li><i class="fa-solid fa-globe text-blue-400 w-5"></i> 웹 검색 - 실시간 정보</li>
-                        <li><i class="fa-solid fa-plug text-gray-500 w-5"></i> MCP - 외부 도구 연동</li>
-                        <li><i class="fa-solid fa-code-compare text-green-600 w-5"></i> API - 통합 & 연동</li>
-                    </ul>
-                </div>
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex flex-col h-full"><h3 class="text-center font-bold border-b pb-2 mb-3">프롬프트 공식</h3><ul class="text-xs space-y-3"><li class="flex"><span class="font-bold w-16 text-claude-600">역할</span> <span class="text-gray-600">역할 지정</span></li><li class="flex"><span class="font-bold w-16 text-claude-600">맥락</span> <span class="text-gray-600">배경 설명</span></li><li class="flex"><span class="font-bold w-16 text-claude-600">과제</span> <span class="text-gray-600">원하는 작업</span></li><li class="flex"><span class="font-bold w-16 text-claude-600">제약</span> <span class="text-gray-600">규칙/톤</span></li><li class="flex"><span class="font-bold w-16 text-claude-600">형식</span> <span class="text-gray-600">출력 양식</span></li></ul></div>
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex flex-col h-full"><h3 class="text-center font-bold border-b pb-2 mb-3">아티팩트 유형</h3><ul class="text-xs space-y-3 text-gray-700"><li><i class="fa-solid fa-globe text-claude-500 w-5"></i> 웹사이트/앱 UI</li><li><i class="fa-solid fa-chart-line text-claude-500 w-5"></i> 대시보드/차트</li><li><i class="fa-solid fa-diagram-project text-claude-500 w-5"></i> 다이어그램</li><li><i class="fa-solid fa-code text-claude-500 w-5"></i> 코드 스니펫</li></ul></div>
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex flex-col h-full"><h3 class="text-center font-bold border-b pb-2 mb-3">스킬 구조</h3><ul class="text-xs space-y-3"><li class="font-bold text-gray-800">1. ROLE (역할)</li><li class="font-bold text-gray-800">2. RULES (규칙)</li><li class="font-bold text-gray-800">3. WORKFLOW (흐름)</li><li class="font-bold text-gray-800">4. EXAMPLES (예시)</li><li class="font-bold text-gray-800">5. FORMAT (형식)</li></ul></div>
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex flex-col h-full"><h3 class="text-center font-bold border-b pb-2 mb-3">코워커 페르소나</h3><ul class="text-xs space-y-2.5 text-gray-700"><li><i class="fa-solid fa-chess-knight text-orange-400 w-5"></i> 전략가</li><li><i class="fa-solid fa-magnifying-glass text-orange-400 w-5"></i> 리뷰어</li><li><i class="fa-solid fa-book-open text-orange-400 w-5"></i> 리서처</li><li><i class="fa-solid fa-chalkboard-user text-orange-400 w-5"></i> 선생님</li></ul></div>
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex flex-col h-full"><h3 class="text-center font-bold border-b pb-2 mb-3">커넥터 도구</h3><ul class="text-xs space-y-3 text-gray-700"><li><i class="fa-brands fa-google-drive text-blue-500 w-5"></i> Google Drive</li><li><i class="fa-brands fa-github text-gray-800 w-5"></i> GitHub</li><li><i class="fa-brands fa-slack text-purple-600 w-5"></i> Slack</li><li><i class="fa-solid fa-plug text-gray-500 w-5"></i> MCP 연동</li></ul></div>
             </div>
-
-            <!-- 3. Workflows & Footer Info -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
-                
-                <!-- 예시 워크플로우 -->
-                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200">
-                    <h3 class="text-center font-bold border-b pb-2 mb-6 text-gray-800">예시 워크플로우: 콘텐츠 제작 시스템</h3>
-                    <div class="flex items-center justify-between text-center px-4">
-                        <div class="flex flex-col items-center"><div class="w-10 h-10 border-2 border-claude-500 rounded-full flex items-center justify-center text-claude-500 mb-1"><i class="fa-regular fa-lightbulb"></i></div><span class="text-xxs font-bold">1. 아이디어<br>주제 발굴</span></div>
-                        <i class="fa-solid fa-arrow-right text-gray-300 text-xs"></i>
-                        <div class="flex flex-col items-center"><div class="w-10 h-10 border-2 border-claude-500 rounded-full flex items-center justify-center text-claude-500 mb-1"><i class="fa-solid fa-magnifying-glass"></i></div><span class="text-xxs font-bold">2. 리서치<br>정보 수집</span></div>
-                        <i class="fa-solid fa-arrow-right text-gray-300 text-xs"></i>
-                        <div class="flex flex-col items-center"><div class="w-10 h-10 border-2 border-claude-500 rounded-full flex items-center justify-center text-claude-500 mb-1"><i class="fa-solid fa-list"></i></div><span class="text-xxs font-bold">3. 아웃라인<br>구성 만들기</span></div>
-                        <i class="fa-solid fa-arrow-right text-gray-300 text-xs"></i>
-                        <div class="flex flex-col items-center"><div class="w-10 h-10 border-2 border-claude-500 rounded-full flex items-center justify-center text-claude-500 mb-1"><i class="fa-solid fa-pen"></i></div><span class="text-xxs font-bold">4. 초안 작성<br>초안 작성</span></div>
-                        <i class="fa-solid fa-arrow-right text-gray-300 text-xs"></i>
-                        <div class="flex flex-col items-center"><div class="w-10 h-10 border-2 border-claude-500 rounded-full flex items-center justify-center text-claude-500 mb-1"><i class="fa-solid fa-bolt"></i></div><span class="text-xxs font-bold">5. 개선<br>다듬기 & 가치</span></div>
-                        <i class="fa-solid fa-arrow-right text-gray-300 text-xs"></i>
-                        <div class="flex flex-col items-center"><div class="w-10 h-10 border-2 border-claude-500 rounded-full flex items-center justify-center text-claude-500 mb-1"><i class="fa-solid fa-file-lines"></i></div><span class="text-xxs font-bold">6. 포맷팅<br>형식 지정</span></div>
-                        <i class="fa-solid fa-arrow-right text-gray-300 text-xs"></i>
-                        <div class="flex flex-col items-center"><div class="w-10 h-10 border-2 border-claude-500 rounded-full flex items-center justify-center text-claude-500 mb-1"><i class="fa-solid fa-paper-plane"></i></div><span class="text-xxs font-bold">7. 발행<br>예약 / 실행</span></div>
-                    </div>
-                </div>
-
-                <!-- 간단한 자동화 흐름 -->
-                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200">
-                    <h3 class="text-center font-bold border-b pb-2 mb-6 text-gray-800">간단한 자동화 흐름</h3>
-                    <div class="flex items-center justify-between text-center px-8">
-                        <div class="flex flex-col items-center">
-                            <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center text-orange-500 mb-2"><i class="fa-solid fa-bolt text-xl"></i></div>
-                            <span class="text-xs font-bold">트리거</span><span class="text-xxs text-gray-500">(새 파일/폼/작업)</span>
-                        </div>
-                        <i class="fa-solid fa-arrow-right text-orange-300"></i>
-                        <div class="flex flex-col items-center">
-                            <div class="w-12 h-12 bg-gray-100 rounded-full border-2 border-gray-300 flex items-center justify-center text-gray-600 mb-2"><i class="fa-solid fa-robot text-xl"></i></div>
-                            <span class="text-xs font-bold">Claude 액션</span><span class="text-xxs text-gray-500">(분석/생성)</span>
-                        </div>
-                        <i class="fa-solid fa-arrow-right text-orange-300"></i>
-                        <div class="flex flex-col items-center">
-                            <div class="w-12 h-12 bg-blue-50 border border-blue-200 rounded flex items-center justify-center text-blue-500 mb-2"><i class="fa-regular fa-file-lines text-xl"></i></div>
-                            <span class="text-xs font-bold">출력</span><span class="text-xxs text-gray-500">(결과/요약)</span>
-                        </div>
-                        <i class="fa-solid fa-arrow-right text-orange-300"></i>
-                        <div class="flex flex-col items-center">
-                            <div class="w-12 h-12 bg-green-50 rounded-full flex items-center justify-center text-green-500 mb-2"><i class="fa-solid fa-rotate text-xl"></i></div>
-                            <span class="text-xs font-bold">통합</span><span class="text-xxs text-gray-500">(외부 도구로 전송)</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Bottom 5 Columns -->
-            <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
-                <div class="bg-white p-4 rounded-xl border border-gray-200 text-xs">
-                    <h4 class="font-bold mb-2 text-gray-800 border-b pb-1">빠른 팁 (QUICK TIPS)</h4>
-                    <ul class="space-y-1.5 text-gray-700">
-                        <li><i class="fa-solid fa-check text-red-500 mr-1"></i>구체적으로 작성하기</li>
-                        <li><i class="fa-solid fa-check text-red-500 mr-1"></i>맥락을 충분히 제공하기</li>
-                        <li><i class="fa-solid fa-check text-red-500 mr-1"></i>예시를 활용하기</li>
-                        <li><i class="fa-solid fa-check text-red-500 mr-1"></i>복잡한 작업을 나누기</li>
-                        <li><i class="fa-solid fa-check text-red-500 mr-1"></i>여러 번 반복 & 개선하기</li>
-                        <li><i class="fa-solid fa-check text-red-500 mr-1"></i>출력 형식 지정하기</li>
-                        <li><i class="fa-solid fa-check text-red-500 mr-1"></i>워크플로우 구축하기</li>
-                        <li><i class="fa-solid fa-check text-red-500 mr-1"></i>연결 도구 활용하기</li>
-                        <li><i class="fa-solid fa-check text-red-500 mr-1"></i>자동화 기능 활용하기</li>
-                    </ul>
-                </div>
-                <div class="bg-white p-4 rounded-xl border border-gray-200 text-xxs">
-                    <h4 class="font-bold mb-2 text-gray-800 border-b pb-1 text-xs">필수 명령어</h4>
-                    <div class="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1 text-gray-700">
-                        <span class="font-bold">/explain</span><span>설명하기</span>
-                        <span class="font-bold">/summarize</span><span>요약하기</span>
-                        <span class="font-bold">/rewrite</span><span>다시 작성하기</span>
-                        <span class="font-bold">/improve</span><span>개선하기</span>
-                        <span class="font-bold">/shorten</span><span>짧게 만들기</span>
-                        <span class="font-bold">/expand</span><span>길게 만들기</span>
-                        <span class="font-bold">/compare</span><span>비교하기</span>
-                        <span class="font-bold">/list</span><span>목록 만들기</span>
-                        <span class="font-bold">/analyze</span><span>분석하기</span>
-                        <span class="font-bold">/translate</span><span>번역하기</span>
-                    </div>
-                </div>
-                <div class="bg-white p-4 rounded-xl border border-gray-200 text-xs">
-                    <h4 class="font-bold mb-2 text-gray-800 border-b pb-1">강력한 프롬프트 시작</h4>
-                    <ul class="space-y-1.5 text-gray-700 list-disc pl-3 marker:text-gray-400">
-                        <li>당신은 [역할] 전문가입니다.</li>
-                        <li>저는 [주제]에 대해 작업 중입니다.</li>
-                        <li>제 목표는 [목표]입니다.</li>
-                        <li>저의 청중은 [대상]입니다.</li>
-                        <li>규칙/제약 조건은 [제약]입니다.</li>
-                        <li>다음 형식으로 출력해주세요: [형식]</li>
-                        <li>출력하기 전에 각 단계를 생각해 주세요.</li>
-                    </ul>
-                </div>
-                <div class="bg-white p-4 rounded-xl border border-gray-200 text-xs">
-                    <h4 class="font-bold mb-2 text-gray-800 border-b pb-1">초보자 실수 (MISTAKES)</h4>
-                    <ul class="space-y-1.5 text-gray-700">
-                        <li><i class="fa-solid fa-xmark text-red-500 mr-1"></i>모호한 프롬프트 사용</li>
-                        <li><i class="fa-solid fa-xmark text-red-500 mr-1"></i>맥락을 제공하지 않음</li>
-                        <li><i class="fa-solid fa-xmark text-red-500 mr-1"></i>한 번에 너무 많은 요청</li>
-                        <li><i class="fa-solid fa-xmark text-red-500 mr-1"></i>반복하지 않음</li>
-                        <li><i class="fa-solid fa-xmark text-red-500 mr-1"></i>출력 형식 무시</li>
-                        <li><i class="fa-solid fa-xmark text-red-500 mr-1"></i>예시 제공하지 않음</li>
-                        <li><i class="fa-solid fa-xmark text-red-500 mr-1"></i>프롬프트 저장하지 않음</li>
-                        <li><i class="fa-solid fa-xmark text-red-500 mr-1"></i>아티팩트 & 스킬 과소평가</li>
-                        <li><i class="fa-solid fa-xmark text-red-500 mr-1"></i>모든 답변을 무조건 신뢰</li>
-                    </ul>
-                </div>
-                <div class="bg-white p-4 rounded-xl border border-gray-200 text-xs flex flex-col justify-center">
-                    <h4 class="font-bold mb-3 text-gray-800 border-b pb-1">성장 단계 (LEVEL UP)</h4>
-                    <div class="space-y-2 text-center text-white font-bold">
-                        <div class="bg-red-300 py-1 rounded">기초 배우기</div>
-                        <div class="bg-red-400 py-1 rounded">시스템 구축</div>
-                        <div class="bg-red-500 py-1 rounded">자동화</div>
-                        <div class="bg-red-600 py-1 rounded">규모 확장 & 최적화</div>
-                        <div class="bg-red-700 py-1 rounded">진정한 파워 유저 되기</div>
-                    </div>
-                </div>
-            </div>
-
         </section>
 
-        <!-- ==========================================
-             CHAPTER DETAIL VIEW (1 to 100 Explicitly)
-             ========================================== -->
-        <section id="chapter-view" class="hidden fade-in max-w-4xl mx-auto">
+        <!-- CHAPTER DETAIL VIEW -->
+        <section id="chapter-view" class="hidden fade-in max-w-5xl mx-auto">
             <div class="flex justify-between items-center mb-6">
-                <button onclick="goHome()" class="inline-flex items-center px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm text-sm font-bold text-gray-700 hover:bg-gray-50 hover:text-claude-600 transition-colors">
-                    <i class="fa-solid fa-arrow-left mr-2"></i> 로드맵 홈으로
-                </button>
-                <div class="text-sm font-bold text-gray-500 bg-white px-4 py-2 rounded-lg shadow-sm border border-gray-200">
-                    <span id="detail-range-badge">1-10</span>
-                </div>
+                <button onclick="goHome()" class="inline-flex items-center px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm text-sm font-bold text-gray-700 hover:text-claude-600 transition-colors"><i class="fa-solid fa-arrow-left mr-2"></i> 메인 로드맵</button>
             </div>
-            
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-                <!-- Header Banner -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden mb-8">
                 <div class="bg-gradient-to-r from-claude-header to-white px-8 py-10 border-b border-gray-100 relative overflow-hidden">
-                    <div class="absolute right-8 top-1/2 transform -translate-y-1/2 opacity-20 text-8xl text-claude-500">
-                        <i id="chapter-icon-large" class="fa-solid fa-brain"></i>
-                    </div>
-                    <span id="chapter-number-badge" class="inline-block px-3 py-1 bg-claude-500 text-white text-sm font-bold rounded-full mb-3 shadow-sm">STEP 1</span>
-                    <h1 id="chapter-title" class="text-3xl md:text-4xl font-black text-gray-900 mb-2 tracking-tight">제1장. 기초 이해</h1>
-                    <p id="chapter-desc" class="text-lg text-gray-600 font-medium max-w-xl">Claude를 효과적으로 사용하기 위한 기반 다지기</p>
+                    <div class="absolute right-8 top-1/2 transform -translate-y-1/2 opacity-10 text-8xl text-claude-500"><i id="chapter-icon-large" class="fa-solid fa-brain"></i></div>
+                    <span id="chapter-number-badge" class="inline-block px-3 py-1 bg-claude-500 text-white text-sm font-bold rounded-full mb-3 shadow-sm">STEP</span>
+                    <h1 id="chapter-title" class="text-3xl md:text-4xl font-black text-gray-900 mb-2 tracking-tight">Title</h1>
+                    <p id="chapter-desc" class="text-lg text-gray-600 font-medium max-w-2xl">Desc</p>
                 </div>
+                <!-- Accordion Container -->
+                <div class="p-6 md:p-8 bg-gray-50/50" id="chapter-content"></div>
                 
-                <!-- Main Content (Items injected here) -->
-                <div class="p-6 md:p-10 bg-gray-50" id="chapter-content">
-                    <!-- Dynamic HTML goes here -->
-                </div>
-                
-                <!-- Navigation Footer -->
                 <div class="bg-white px-8 py-6 border-t border-gray-200 flex justify-between items-center">
-                    <button id="prev-btn" onclick="navigateChapter(-1)" class="px-5 py-2 text-gray-600 font-bold hover:bg-gray-100 rounded-lg transition-colors border border-transparent hover:border-gray-200">
-                        <i class="fa-solid fa-chevron-left mr-1"></i> 이전 단계
-                    </button>
-                    <button id="next-btn" onclick="navigateChapter(1)" class="px-8 py-3 bg-claude-500 text-white rounded-xl font-bold hover:bg-claude-600 transition-all shadow-md hover:shadow-lg flex items-center">
-                        다음 단계 <i class="fa-solid fa-chevron-right ml-2"></i>
-                    </button>
+                    <button id="prev-btn" onclick="navigateChapter(-1)" class="px-5 py-2 text-gray-600 font-bold hover:bg-gray-100 rounded-lg transition-colors border border-transparent"><i class="fa-solid fa-chevron-left mr-1"></i> 이전 단계</button>
+                    <button id="next-btn" onclick="navigateChapter(1)" class="px-8 py-3 bg-claude-500 text-white rounded-xl font-bold hover:bg-claude-600 transition-all shadow-md flex items-center">다음 단계 <i class="fa-solid fa-chevron-right ml-2"></i></button>
                 </div>
             </div>
         </section>
-
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-white border-t border-gray-200 mt-12 py-8">
-        <div class="max-w-[1400px] mx-auto px-4 text-center text-gray-500 text-sm font-medium">
-            <p>© 2026 Claude Mastery Roadmap. Based on the 100-step framework.</p>
-        </div>
-    </footer>
-
-    <!-- JavaScript Data and Logic -->
     <script>
-        // The Exhaustive 1-100 Data Structure (No omissions!)
-        const chaptersData = [
-            {
-                id: 1, range: "1-10", title: "기초 이해", icon: "fa-brain", goal: "Claude를 효과적으로 사용하기",
-                items: [
-                    { num: 1, title: "Claude란 무엇인가", desc: "Anthropic에서 개발한 AI 비서로, 챗GPT와 유사하지만 '안전하고 유용하며 정직한' 원칙을 바탕으로 자연스러운 문장력을 자랑합니다." },
-                    { num: 2, title: "Claude 모델 이해", desc: "용도에 따라 가볍고 빠른 Haiku, 밸런스가 뛰어나고 코딩에 능한 주력 모델 Sonnet, 고도의 추론 능력을 갖춘 Opus 등 3가지 모델을 제공합니다." },
-                    { num: 3, title: "대화 방식 이해", desc: "단순한 검색창이 아닙니다. 이전의 대화 내용(맥락)을 기억하므로, 대화를 주고받으며 결과물을 점점 다듬어 나가는(핑퐁) 방식이 핵심입니다." },
-                    { num: 4, title: "컨텍스트 윈도우 이해", desc: "AI의 '단기 기억력'입니다. 클로드는 200K 토큰이라는 엄청난 기억 용량을 가져 한 번에 책 한 권(500쪽) 분량의 데이터를 기억하고 분석할 수 있습니다." },
-                    { num: 5, title: "Claude의 장점", desc: "기계적인 번역투가 아닌 실제 사람이 쓴 것 같은 극강의 자연스러운 한국어 글쓰기 능력과 방대한 문서 처리 능력이 타 AI 대비 압도적인 장점입니다." },
-                    { num: 6, title: "가격 및 요금제", desc: "기본적인 기능은 무료(Free)로 사용 가능하며, 사용량 제한을 늘리고 최상위 모델(Opus)을 사용하려면 월 $20의 Pro 요금제를 구독해야 합니다." },
-                    { num: 7, title: "인터페이스 살펴보기", desc: "화면 좌측의 채팅 기록, 중앙의 대화창, 하단의 프롬프트 입력창 및 파일 첨부(클립 아이콘) 버튼 등 직관적이고 깔끔한 UI를 제공합니다." },
-                    { num: 8, title: "설정 가이드", desc: "좌측 하단의 프로필 메뉴에서 다크모드/라이트모드 테마를 변경하거나, 'Feature Preview'에서 최신 베타 기능(아티팩트 등)을 켤 수 있습니다." },
-                    { num: 9, title: "알아두면 좋은 팁", desc: "인사말 같은 불필요한 말은 생략하고 본론부터 말하세요. 주제가 완전히 바뀔 때는 무조건 '새 채팅(New Chat)'을 열어 AI의 혼란을 막아야 합니다." },
-                    { num: 10, title: "키보드 단축키", desc: "질문을 전송할 때는 'Enter'를 누르고, 긴 질문을 위해 줄바꿈을 할 때는 반드시 'Shift + Enter'를 눌러야 실수로 전송되는 것을 막을 수 있습니다." }
-                ]
-            },
-            {
-                id: 2, range: "11-20", title: "프롬프트 작성", icon: "fa-comment-dots", goal: "Claude의 답변을 예측 가능하게 만들기",
-                items: [
-                    { num: 11, title: "역할 프롬프트", desc: "AI에게 '너는 10년 차 마케터야'와 같이 구체적인 전문가의 가면(페르소나)을 씌워 답변의 전문성과 톤앤매너를 획기적으로 높이는 기술입니다." },
-                    { num: 12, title: "컨텍스트 구성", desc: "질문만 던지지 말고, '우리 회사는 타겟이 20대야'처럼 이 질문을 하는 나의 현재 상황과 배경 지식을 충분히 설명해야 맞춤형 답이 나옵니다." },
-                    { num: 13, title: "사고의 사슬 프롬프트", desc: "복잡한 문제에 대해 '정답을 내기 전에 먼저 단계별로 생각하는 과정을 작성해 줘'라고 지시하여 AI의 논리력과 정확도를 극대화하는 기법입니다." },
-                    { num: 14, title: "상황(상황) 프롬프트", desc: "'나는 내일 당장 면접을 앞둔 초보자야'처럼 답변을 읽을 독자나 나의 구체적인 처지를 명시하여, 불필요한 설명 없이 핵심만 받도록 유도합니다." },
-                    { num: 15, title: "프롬프트 체이닝", desc: "큰 업무를 한 번에 지시하지 않고 '1단계: 목차 작성 -> 2단계: 1장 본문 작성' 식으로 꼬리를 물며 지시를 쪼개어 결과물의 완성도를 높입니다." },
-                    { num: 16, title: "출력 형식 지정", desc: "원하는 결과물의 형태를 '마크다운 표 형식', '글머리 기호', '이메일 양식' 등으로 정확하게 지정하여 복사-붙여넣기 수고를 덜어냅니다." },
-                    { num: 17, title: "제약적 워크플로우", desc: "'전문 용어는 쓰지 마', '500자를 넘기지 마' 등 AI가 절대 하면 안 되는 가이드라인(제약)을 설정하여 엉뚱한 방향으로 새는 것을 막습니다." },
-                    { num: 18, title: "시스템 프롬프트", desc: "채팅방을 시작할 때 최초로 부여하는 '이 채팅방 전체를 지배하는 절대 규칙'입니다. 매번 같은 조건을 반복해서 입력할 필요가 없게 해줍니다." },
-                    { num: 19, title: "재사용 템플릿", desc: "자주 하는 질문을 빈칸([주제], [타겟])이 있는 템플릿 형태로 메모장에 저장해 두고, 필요할 때 복사해서 변수만 갈아 끼우는 효율적인 방식입니다." },
-                    { num: 20, title: "프롬프트 최적화", desc: "'더 완벽한 답변을 주기 위해 내 질문을 어떻게 수정하면 좋을지 역으로 제안해 줘'라고 요청하여 AI 스스로 나의 질문을 업그레이드하게 만듭니다." }
-                ]
-            },
-            {
-                id: 3, range: "21-30", title: "아티팩트 활용", icon: "fa-layer-group", goal: "인터랙티브한 결과물 만들기",
-                items: [
-                    { num: 21, title: "아티팩트란 무엇인가", desc: "채팅창 옆에 별도의 캔버스(화면)를 열어 코드, 웹페이지, 다이어그램, 깔끔한 문서를 렌더링해서 보여주는 클로드만의 강력한 시각화 기능입니다." },
-                    { num: 22, title: "아티팩트 유형", desc: "작동하는 웹사이트 앱, 실시간 차트/대시보드, SVG 벡터 그래픽 아이콘, 마인드맵/플로우차트, 복잡한 코드 블록 등 다양한 포맷을 지원합니다." },
-                    { num: 23, title: "아티팩트 프롬프트", desc: "결과물이 길어지면 알아서 열리지만, 명시적으로 '이 기획안을 별도의 UI 화면(아티팩트)으로 깔끔하게 구성해서 보여줘'라고 호출할 수 있습니다." },
-                    { num: 24, title: "간단한 프로젝트", desc: "코딩을 전혀 몰라도 '할 일 관리 앱', '타이머', '간단한 계산기' 등의 미니 프로젝트를 자연어 요구사항만으로 즉시 생성하고 실행해볼 수 있습니다." },
-                    { num: 25, title: "반응형 디자인", desc: "웹페이지를 생성할 때 '모바일에서도 화면이 깨지지 않는 반응형 디자인(Tailwind CSS 활용)으로 만들어줘'라고 지시하여 완성도를 높입니다." },
-                    { num: 26, title: "실시간 편집", desc: "만들어진 결과물 전체를 다시 요구할 필요 없이, '버튼 색깔을 파란색으로 바꿔줘'라고 수정 사항만 채팅창에 치면 아티팩트가 실시간 업데이트됩니다." },
-                    { num: 27, title: "디버깅", desc: "만들어진 앱이 작동하지 않을 때, 증상을 그대로 말하거나 에러 코드를 붙여넣기만 하면 클로드가 스스로 원인을 찾고 코드를 수정해 냅니다." },
-                    { num: 28, title: "프론트엔드 기초", desc: "웹을 구성하는 HTML(뼈대), CSS(디자인), JavaScript(동작)의 기본 역할만 이해하고 있으면, 클로드에게 원하는 디자인 수정을 훨씬 정확하게 지시할 수 있습니다." },
-                    { num: 29, title: "프롬프트 재사용", desc: "마음에 드는 아티팩트를 만들었다면, 그 결과물을 도출했던 전체 프롬프트를 따로 저장하여 나중에 비슷한 도구를 만들 때 기초 뼈대로 재사용합니다." },
-                    { num: 30, title: "빌드 미니 제품", desc: "단순한 답변을 얻는 것을 넘어, '나의 한 달 식비를 계산해 주는 대시보드'처럼 나의 일상을 돕는 나만의 완벽한 미니 소프트웨어 제품을 기획하고 완성합니다." }
-                ]
-            },
-            {
-                id: 4, range: "31-40", title: "핵심 스킬", icon: "fa-wand-magic-sparkles", goal: "재사용 가능한 AI 워크플로우 구축",
-                items: [
-                    { num: 31, title: "필수 스킬", desc: "일상 업무에서 가장 빈번하게 쓰이는 요약 능력(긴 문서 압축), 변환 능력(표, 메일 형태 변경), 번역 능력(맥락에 맞는 자연스러운 번역)의 숙달입니다." },
-                    { num: 32, title: "스킬 구조화", desc: "단순한 질문을 넘어 '역할, 규칙, 워크플로우, 예시, 출력형식'이라는 5가지 공식(프레임워크)에 맞춰 나만의 단단한 질문 템플릿을 설계하는 방법입니다." },
-                    { num: 33, title: "글쓰기 스킬", desc: "문체(말투), 분량 제한, 필수 키워드 등을 정교하게 디렉팅하여 내 마음에 쏙 드는 보고서, 블로그 글, 이메일 초안을 일관된 품질로 뽑아내는 기술입니다." },
-                    { num: 34, title: "리서치 스킬", desc: "방대한 텍스트나 PDF 자료에서 단순히 요약하는 것을 넘어, 'A와 B의 공통점과 차이점' 등 내가 원하는 특정 조건의 정보만 정확히 발굴해 내는 기술입니다." },
-                    { num: 35, title: "전략적 스킬", desc: "단순 작업을 넘어, 상황을 주고 '이 문제를 해결하기 위한 마케팅 기획안 3가지와 잠재적 리스크를 분석해 줘'처럼 기획자/컨설턴트로 활용하는 기술입니다." },
-                    { num: 36, title: "스킬 라이브러리", desc: "성공적으로 작동한 나만의 프롬프트 템플릿(스킬)들을 잊어버리지 않게 노션이나 에버노트에 체계적으로 분류하고 저장하여 언제든 꺼내 쓰는 방법입니다." },
-                    { num: 37, title: "일관성 유지", desc: "AI가 매번 답변 스타일을 바꾸지 않도록, 가장 마음에 들었던 완벽한 결과물을 프롬프트 내에 '예시(Few-shot)'로 고정 삽입하여 품질을 통제합니다." },
-                    { num: 38, title: "환각(Hallucination) 방지", desc: "스킬 규칙에 '문서에 없는 내용이라면 절대 지어내지 말고 모른다고 답해'라는 문구를 의무적으로 넣어 거짓 정보를 차단하는 핵심 안전장치입니다." },
-                    { num: 39, title: "전문 분야 워크플로우", desc: "개별적으로 만든 여러 개의 스킬들을 조합하여 '뉴스 요약 -> 블로그 글 작성 -> 인스타 해시태그 추출'처럼 하나로 연결된 파이프라인을 구축합니다." },
-                    { num: 40, title: "스크래치부터 시작", desc: "어떻게 질문해야 할지 막막할 때, '내가 이런 자동화 스킬을 만들고 싶은데, 나에게 필요한 프롬프트를 네가 직접 설계해서 템플릿으로 줘'라고 요청하는 기법입니다." }
-                ]
-            },
-            {
-                id: 5, range: "41-50", title: "협업 (코워커)", icon: "fa-users", goal: "Claude를 당신의 팀원처럼 활용하기",
-                items: [
-                    { num: 41, title: "코워커란 무엇인가", desc: "AI를 지시만 받는 자판기가 아니라, 나의 부족한 점을 채워주고 피드백을 주고받는 '지능형 동료'로 대하는 파워 유저들의 핵심 마인드셋입니다." },
-                    { num: 42, title: "협업하기", desc: "내가 완벽한 초안을 준비할 필요 없이, 투박한 아이디어를 던진 후 '여기서 부족한 구멍을 찾아서 나한테 역으로 질문해 줘'라며 핑퐁하며 완성해 나갑니다." },
-                    { num: 43, title: "리뷰어", desc: "[페르소나 1] 내가 쓴 글, 기획, 코드를 검토하는 깐깐한 편집장 역할. '칭찬은 빼고 논리적 허점과 고칠 부분만 매섭게 3가지 지적해 줘'라고 활용합니다." },
-                    { num: 44, title: "전략가", desc: "[페르소나 2] 문제 상황에서 돌파구를 찾는 역할. '매출이 30% 떨어졌어. 이 위기를 극복할 차별화 전략 3가지를 예산 포함해서 제안해 줘'라고 활용합니다." },
-                    { num: 45, title: "리서처", desc: "[페르소나 3] 방대한 자료를 파헤치는 역할. '100쪽짜리 정책 문서에서 청년 창업 지원금 조건과 날짜만 찾아서 표로 정리해 줘'라고 활용합니다." },
-                    { num: 46, title: "에디터", desc: "[페르소나 4] 투박한 메모를 목적에 맞게 다듬는 역할. '의식의 흐름대로 쓴 이 메모를 인스타그램에 올리기 좋은 감성적인 톤으로 윤문해 줘'라고 활용합니다." },
-                    { num: 47, title: "선생님/티칭 파트너", desc: "[페르소나 5] 새로운 지식을 눈높이에 맞춰 설명하는 역할. '양자역학을 전문 용어 없이 요리에 비유해서 초등학생도 알게 가르쳐 줘'라고 활용합니다." },
-                    { num: 48, title: "플래너", desc: "[페르소나 6] 막막한 일정과 계획을 세우는 역할. '3달 뒤 바디프로필을 찍을 건데, 주차별 운동 강도와 식단 목표를 타임라인으로 짜줘'라고 활용합니다." },
-                    { num: 49, title: "멘토 역할 수행", desc: "[페르소나 7] 고민이나 진로에 조언을 주는 역할. '데이터 공부가 너무 막막한데, 멘탈을 다잡을 조언과 초보자를 위한 첫걸음 가이드를 제시해 줘'라고 활용합니다." },
-                    { num: 50, title: "운영 지침", desc: "동료 역할을 수행할 때 채팅창이 엇나가지 않도록 '질문 의도를 모르면 짐작하지 말고 나에게 다시 물어볼 것' 등 최초의 협업 룰을 정하는 작업입니다." }
-                ]
-            },
-            {
-                id: 6, range: "51-60", title: "연결 (커넥터)", icon: "fa-link", goal: "세상과 연결된 Claude 만들기",
-                items: [
-                    { num: 51, title: "커넥터란 무엇인가", desc: "텍스트 복사-붙여넣기 방식을 벗어나, 클로드가 내 구글 드라이브나 노션 같은 외부 앱에 직접 접근해 파일을 읽고 분석하게 연결하는 파이프라인입니다." },
-                    { num: 52, title: "Google Drive", desc: "가장 보편적인 클라우드 연결. '내 드라이브의 최근 1주일 문서들의 핵심만 브리핑해 줘' 같이 방대한 문서를 클릭 없이 분석하도록 지시할 수 있습니다." },
-                    { num: 53, title: "GitHub", desc: "개발 환경 연동. 기획자나 초보 개발자가 '이 깃허브 저장소의 코드가 어떤 기능을 하는지 나도 이해할 수 있게 설명해 줘'라고 파악할 때 유용합니다." },
-                    { num: 54, title: "Notion", desc: "업무 문서망 연동. 회사의 지식 기반인 노션 폴더 전체를 연결하여 '마케팅 회의록 전체를 읽고 아직 미해결된 이슈들만 모아줘'라고 지시합니다." },
-                    { num: 55, title: "Slack", desc: "메신저 연동. 슬랙 방에 클로드 봇을 초대하여 팀원들과 대화하다가 '@Claude 방금까지 나눈 긴 대화를 3줄로 요약해 줘'라고 즉석에서 활용합니다." },
-                    { num: 56, title: "파일 분석", desc: "커넥터로 연동된 대용량 PDF 문서 여러 개를 동시에 파싱(Parsing)하여, 'A문서와 B문서에서 공통으로 주장하는 보안 수칙 5가지를 찾아줘' 등을 수행합니다." },
-                    { num: 57, title: "Google Sheets 분석", desc: "구글 시트 연동의 혁명. 엑셀 수식을 몰라도 숫자가 꽉 찬 시트를 연결하고 '이번 달 매출 상위 3개 제품의 성공 요인을 분석해 줘'라고 자연어로 묻습니다." },
-                    { num: 58, title: "워크플로우 연동", desc: "단일 앱 연결을 넘어 '슬랙의 고객 불만 메시지(A)를 읽고, 노션(B)의 보고서 양식에 맞춰 알아서 문서를 작성해 줘'처럼 A에서 B로 데이터를 이동시킵니다." },
-                    { num: 59, title: "웹 검색 연동", desc: "클로드의 지식 기준일 한계를 넘어, 실시간 인터넷 검색 기능을 연동하여 '오늘 기준 테슬라 주가 하락 원인 최신 뉴스를 요약해 줘'라고 지시합니다." },
-                    { num: 60, title: "데이터 접근", desc: "외부 도구를 연결할 때 가장 중요한 보안 설정입니다. 회사의 기밀이나 개인정보 유출을 막기 위해 필수적인 최소 권한(읽기 전용 등)만 부여하는 방법입니다." }
-                ]
-            },
-            {
-                id: 7, range: "61-70", title: "자동화", icon: "fa-gears", goal: "Claude로 업무 프로세스 자동화하기",
-                items: [
-                    { num: 61, title: "MCP란 무엇인가", desc: "Model Context Protocol. 클로드가 웹사이트를 벗어나 내 로컬 컴퓨터의 폴더나 다른 앱과 안전하게 통신할 수 있게 해주는 혁명적인 '표준 연결 포트' 기술입니다." },
-                    { num: 62, title: "MCP가 중요한 이유", desc: "파일 복사/업로드가 필요 없어집니다. '바탕화면의 엑셀 파일을 읽고 요약해' 한 마디로 내 컴퓨터 안의 데이터를 클로드가 직접 만질 수 있게 됩니다." },
-                    { num: 63, title: "AI 에이전트", desc: "단순히 대답만 하는 챗봇(입)을 넘어, 스스로 계획을 세우고 도구를 사용해 직접 행동(손)까지 취하는 한 단계 진화된 인공지능의 형태를 의미합니다." },
-                    { num: 64, title: "자동화 워크플로우", desc: "모든 자동화는 '방아쇠(트리거)'와 '행동(액션)'으로 구성됩니다. '특정 메일이 오면(트리거) -> 감정 분석 후 요약해서 슬랙으로 보낸다(액션)'의 흐름입니다." },
-                    { num: 65, title: "API 기초", desc: "도구와 도구가 대화하는 방법(웨이터 역할)입니다. 비개발자도 'API를 통해 클로드가 지메일 데이터를 가져올 수 있구나'라는 개념을 이해하는 단계입니다." },
-                    { num: 66, title: "Zapier", desc: "API나 코딩을 전혀 몰라도 마우스 클릭만으로 구글, 노션, 클로드를 블록 조립하듯 연결해 주는 강력한 노코드(No-code) 자동화 플랫폼입니다." },
-                    { num: 67, title: "자동화 만들기", desc: "에버노트에 아이디어를 쓰면 클로드가 블로그 글로 다듬어 워드프레스에 자동 임시 저장하는 등, 재피어를 활용해 나의 첫 파이프라인을 구축해 봅니다." },
-                    { num: 68, title: "에이전트 시스템", desc: "프롬프트 체이닝을 극대화하여 1번 AI(리서치), 2번 AI(글쓰기), 3번 AI(검수)가 마치 컨베이어 벨트처럼 순차적으로 역할을 넘겨받으며 일하는 시스템입니다." },
-                    { num: 69, title: "가드레일 설정", desc: "자동화가 무섭게 사고를 치는 것을 막는 브레이크입니다. '고객에게 자동 메일을 전송하기 전에는 반드시 내 휴대폰으로 승인 요청을 보내'라고 설정합니다." },
-                    { num: 70, title: "자율 실행", desc: "세세한 지시 없이 큰 목표만 던져도 알아서 실행하는 궁극적 단계. '내일 부산 출장 갈 건데, 내 캘린더 보고 기차표 예매하고 숙소 추천해 줘'가 가능해집니다." }
-                ]
-            },
-            {
-                id: 8, range: "71-80", title: "Claude Code", icon: "fa-laptop-code", goal: "Claude Code로 개발 효율 극대화",
-                items: [
-                    { num: 71, title: "Claude Code 개요", desc: "프로그래밍 언어를 몰라도 기획자나 마케터가 자연어 명령만으로 복잡한 소프트웨어 프로젝트를 생성하고 관리할 수 있는 최신 개발 협업 도구입니다." },
-                    { num: 72, title: "Explain Code Simply", desc: "비개발자가 복잡한 시스템 구조를 파악할 때 사용하는 기능. 개발팀이 넘겨준 코드를 클로드에 넣고 '이게 어떻게 돌아가는 건지 초등학생도 알게 3줄로 설명해 줘'라고 요청합니다." },
-                    { num: 73, title: "디버깅 오류 & 파일", desc: "만든 프로그램에서 에러가 발생했을 때 당황하지 않고 화면의 에러 로그 텍스트를 그대로 복사해주면, 클로드가 원인을 파악하고 수정 코드를 제시합니다." },
-                    { num: 74, title: "Refactor Code", desc: "지저분하고 비효율적으로 짜인 초기 코드를 클로드에게 주고 '기능은 똑같이 유지하되, 속도가 빠르고 깔끔하게 코드를 리팩토링(정리)해 줘'라고 지시합니다." },
-                    { num: 75, title: "Full Stack 프로젝트", desc: "프론트엔드(화면)와 백엔드(서버/데이터베이스)를 아우르는 풀스택 앱(예: 회원가입이 가능한 게시판)을 프롬프트만으로 기획하고 구축하는 경험입니다." },
-                    { num: 76, title: "문서 작성", desc: "코드의 힘을 실무에 적용! 클로드가 파이썬(Python) 백그라운드 코드를 짜서 '로고 이미지와 데이터 CSV를 읽어 PPT 템플릿의 빈칸을 채우고 새 보고서로 저장'하는 마법을 부립니다." },
-                    { num: 77, title: "단위 테스트 & 분석", desc: "내가 만든 특정 기능(예: 계산기의 더하기 버튼)이 예외 상황에서도 완벽하게 작동하는지 검증하기 위해 클로드에게 자동화된 테스트 코드를 짜달라고 요구합니다." },
-                    { num: 78, title: "베스트 프랙티스", desc: "코드를 짤 때 업계 표준과 보안 규칙을 지키도록 '이 프로젝트는 반드시 최신 React 베스트 프랙티스를 따르고 보안 취약점이 없게 짜줘'라고 지시합니다." },
-                    { num: 79, title: "개발 워크플로우 팁", desc: "폴더 최상단에 CLAUDE.md 파일을 만들어 '우리 프로젝트는 무조건 타입스크립트만 쓴다'는 전역 지침을 저장해두어 클로드가 규칙을 지키며 개발하게 만듭니다." },
-                    { num: 80, title: "더 나은 코드 배포", desc: "로컬에서 잘 작동하는 내 앱을 Vercel 등 실제 인터넷 세상(서버)에 올리기 위해 클로드에게 '이 프로젝트를 무료 호스팅에 배포하는 과정을 단계별로 알려줘'라고 지시합니다." }
-                ]
-            },
-            {
-                id: 9, range: "81-90", title: "실전 활용 사례", icon: "fa-briefcase", goal: "일상생활에서 Claude 완벽 활용하기",
-                items: [
-                    { num: 81, title: "고급 프롬프트", desc: "단순 지시를 넘어, 특정 상황 변수에 따라 출력값이 달라지도록 논리 구조(If-Then)가 포함된 프로그래밍 수준의 복잡한 텍스트 프롬프트를 구사합니다." },
-                    { num: 82, title: "커스텀 워크플로우", desc: "인사팀의 이력서 필터링 등 특정 직무에 완전히 맞춰진 과정. '폴더 내 100장 이력서 중 파이썬 3년 차 이상만 뽑아 장단점을 표로 만들어'를 구현합니다." },
-                    { num: 83, title: "멀티 에이전트 시스템", desc: "하나의 일에 다수의 AI를 배치하는 실전. 'AI-1은 경쟁사 뉴스 스크랩, AI-2는 이를 바탕으로 기획안 작성, AI-3은 기획안의 약점을 공격하는 토론'을 진행합니다." },
-                    { num: 84, title: "고급 협업", desc: "단순 피드백을 넘어, 나와 AI가 역할을 교대하며 모의 면접을 진행하거나, 내가 코딩을 하다가 막힐 때 힌트만 달라고 요구하는 수준 높은 상호작용입니다." },
-                    { num: 85, title: "확장 가능한 시스템", desc: "나 혼자 쓰는 프롬프트를 넘어, 우리 부서 팀원 10명이 누구나 통일된 양식으로 쓸 수 있도록 시스템화된 공용 프롬프트/가이드라인을 배포합니다." },
-                    { num: 86, title: "성능 튜닝", desc: "결과물의 품질이 떨어질 때 원인을 분석하고, 프롬프트의 'Context'를 구체화하거나 'Few-shot(예시)'의 질을 높여 AI의 출력 성능을 극한으로 끌어올립니다." },
-                    { num: 87, title: "Deep Research 업무", desc: "엑셀 재무제표 5개 연치를 던져주고 '이 회사의 마케팅 비용 증가율과 영업이익률 간의 상관관계를 통계적으로 추론하고 다이어그램으로 증명해 줘' 수준의 심도 깊은 리서치입니다." },
-                    { num: 88, title: "비즈니스 자동화", desc: "매일 아침 9시에 CS 불만 접수 내역을 분석하여 요약 리포트를 경영진의 슬랙으로 자동 전송하는 등 기업의 실제 프로세스를 효율화하는 단계입니다." },
-                    { num: 89, title: "나만의 시스템 구축", desc: "출근 직후 클로드가 내 구글 캘린더, 이메일, 슬랙을 모두 종합 분석해 '오늘 당신이 우선적으로 처리해야 할 3가지'를 브리핑하는 개인 맞춤형 비서 시스템입니다." },
-                    { num: 90, title: "마스터 클래스", desc: "지금까지 배운 모든 스킬(프롬프트, 아티팩트, MCP 자동화)을 유기적으로 결합하여, 나의 업무 시간을 80% 이상 단축한 성공 사례를 완성합니다." }
-                ]
-            },
-            {
-                id: 10, range: "91-100", title: "파워 유저", icon: "fa-crown", goal: "진정한 파워 유저 되기",
-                items: [
-                    { num: 91, title: "진행판 따위 외치 되기", desc: "(Break the mold) 남들이 만들어둔 템플릿이나 뻔한 질문 방식에 얽매이지 않고, AI에게 '내가 원하는 것을 얻기 위해 네가 나를 리드하고 질문해'라며 판을 주도합니다." },
-                    { num: 92, title: "시스템 구축", desc: "파편화된 자동화들을 하나로 모아, 업무의 시작(기획)부터 끝(발행)까지 물 흐르듯 이어지는 거대한 마스터 워크플로우를 완벽하게 세팅합니다." },
-                    { num: 93, title: "자동화", desc: "사람의 개입이 거의 필요 없는 'Zero-touch' 자동화 파이프라인. 예외 상황이 발생해도 시스템이 무너지지 않도록 강력한 에러 핸들링을 적용합니다." },
-                    { num: 94, title: "고도화", desc: "(Refinement) 시스템이 단 한 번이라도 엉뚱한 결론을 내면, 즉시 프롬프트에 새로운 예외 처리 규칙(가드레일)을 추가해 두 번 다시 같은 실수를 못 하게 다듬습니다." },
-                    { num: 95, title: "확장 가능한 솔루션", desc: "나의 개인 비서를 넘어, 내가 만든 자동화 파이프라인을 템플릿화하여 회사 전체에 도입하거나 타인에게 판매/공유할 수 있는 수준으로 제품화합니다." },
-                    { num: 96, title: "성능 튜닝", desc: "더 적은 프롬프트 길이(토큰 절약)로 더 빠르고 정확한 대답을 얻어내기 위해, 지시문의 군더더기를 깎아내고 최적의 단어만을 엄선하는 장인의 작업입니다." },
-                    { num: 97, title: "깊이 있는 연구", desc: "클로드의 최신 업데이트(새 모델 출시, MCP 기능 추가 등)를 지속적으로 팔로우업하며, 새로운 기술을 나의 워크플로우에 가장 먼저 적용하는 탐구 자세입니다." },
-                    { num: 98, title: "비즈니스 자동화", desc: "단순한 업무 보조를 넘어 1인 기업가 수준으로 CS 응대, 마케팅 콘텐츠 배포, 데이터 분석을 모두 AI 에이전트들에게 위임하여 비즈니스를 오토파일럿으로 돌립니다." },
-                    { num: 99, title: "나만의 시스템 구축", desc: "노션(Notion) 등에 내가 자주 쓰는 프롬프트, 에이전트 설정, 자동화 모니터링 로그를 한 곳에 모은 궁극의 '나만의 AI 중앙 사령부(Dashboard)'를 완성합니다." },
-                    { num: 100, title: "마스터 클래스 수료", desc: "축하합니다! 질문하는 초보자를 넘어 AI의 모든 잠재력을 끌어쓰는 지휘관(파워 유저)으로 거듭났습니다. 이제 당신만의 새로운 비즈니스를 창조할 시간입니다." }
-                ]
-            }
+        /* * 100개의 항목 전체에 고유한 도식화 데이터(d_type, d_data)를 추가했습니다.
+         * d_type: 
+         * - flow: 프로세스 흐름 (3~4단계)
+         * - vs: 두 가지 개념 비교 (Before -> After)
+         * - hub: 중심 개념과 주변 요소
+         * - card: 태그 형태의 핵심 요약
+         * - terminal: 코드/터미널 시뮬레이션
+         */
+        const rawData = [
+            // Chapter 1: 기초 이해
+            { id: 1, range: "1-10", title: "기초 이해", icon: "fa-brain", goal: "Claude를 효과적으로 사용하기", items: [
+                { title: "Claude란 무엇인가", desc: "안전하고 자연스러운 글쓰기를 지향하는 AI 비서", detail: "Constitutional AI 원칙으로 학습되어 인간적이고 논리적인 장문의 글을 아주 자연스럽게 작성합니다.", example: "Claude는 Anthropic에서 개발한 AI입니다.", d_type: "vs", d_data: ["기존 챗봇\n(단답형/기계적 번역투)", "Claude\n(문맥 유지/원어민급 자연스러움)"] },
+                { title: "Claude 모델 이해", desc: "Haiku, Sonnet, Opus 3가지 모델", detail: "작업의 복잡도에 따라 모델을 선택합니다. 실무에서는 3.5 Sonnet이 표준입니다.", example: "단순 작업 -> Haiku\n실무 코딩 -> Sonnet\n고도 추론 -> Opus", d_type: "card", d_data: { title: "Claude 라인업", tags: ["Haiku (초고속/가성비)", "Sonnet (실무/코딩 밸런스)", "Opus (최상위 추론/수학)"] } },
+                { title: "대화 방식 이해", desc: "맥락을 유지하는 핑퐁 대화법", detail: "이전 대화를 기억하므로 한 번에 완벽한 답을 얻으려 하지 말고 피드백을 통해 다듬어갑니다.", example: "1. 초안 짜줘 -> 2. 예산 부분만 표로 바꿔줘", d_type: "flow", d_data: ["아이디어 투척", "초안 도출", "피드백 (핑퐁)", "최종안 완성"] },
+                { title: "컨텍스트 윈도우 이해", desc: "책 한 권 분량을 기억하는 200K 토큰", detail: "약 500페이지 분량의 텍스트, PDF 문서를 한 번에 업로드하고 분석할 수 있습니다.", example: "매뉴얼_100p.pdf 파일 업로드 후 질문", d_type: "hub", d_data: { center: "200K 토큰 메모리", nodes: ["PDF 수십 장 동시 분석", "엑셀/CSV 데이터", "책 한 권 분량 텍스트", "전체 코드베이스"] } },
+                { title: "Claude의 장점", desc: "기계적이지 않은 자연스러운 한국어 문장력", detail: "번역기 특유의 어색함이 없어 별도의 윤문 작업이 거의 필요 없습니다.", example: "이 영문 기사를 20대 대학생 말투로 번역해줘.", d_type: "vs", d_data: ["챗GPT 한국어\n(어색한 직역투 발생)", "Claude 한국어\n(사람이 직접 쓴 듯한 문체)"] },
+                { title: "가격 및 요금제", desc: "Free 버전과 Pro 요금제", detail: "무료 버전도 충분하나 프로젝트성 업무에는 우선 접속권과 Opus가 제공되는 Pro 구독이 유리합니다.", example: "월 $20 결제 시 사용량 제한 대폭 완화", d_type: "vs", d_data: ["Free (무료)\n기본 모델, 횟수 제한 엄격", "Pro ($20/월)\nOpus 접근, 사용량 5배, 우선권"] },
+                { title: "인터페이스 살펴보기", desc: "직관적인 UI와 클립보드 활용법", detail: "파일 첨부 기능(클립 아이콘)을 활용하여 최대 5개의 문서를 동시 업로드할 수 있습니다.", example: "📎 버튼 클릭 -> 파일 선택 -> 프롬프트 입력", d_type: "flow", d_data: ["파일 첨부 (📎)", "프롬프트(지시어) 입력", "Enter 전송", "분석 결과 확인"] },
+                { title: "설정 가이드", desc: "테마 설정 및 최신 베타 기능 활성화", detail: "Settings > Feature Preview에서 'Artifacts(아티팩트)' 등 최신 기능을 반드시 켜두세요.", example: "Feature Preview -> Artifacts 토글 On", d_type: "flow", d_data: ["좌측 하단 프로필", "Settings", "Feature Preview", "Artifacts 활성화 (ON)"] },
+                { title: "알아두면 좋은 팁", desc: "새로운 주제 시 반드시 새 채팅 열기", detail: "기억 용량 낭비를 막고 할루시네이션을 방지하려면 주제 변경 시 New Chat을 활용하세요.", example: "코딩 질문 방과 영어 번역 방 분리", d_type: "vs", d_data: ["하나의 채팅방 계속 쓰기\n(주제 혼동, 컨텍스트 낭비)", "주제별 새 채팅(New Chat)\n(정확도 상승, 깔끔한 이력)"] },
+                { title: "키보드 단축키", desc: "Shift + Enter를 활용한 안전한 줄바꿈", detail: "구조화된 긴 질문 작성 시 실수로 Enter가 눌려 미완성 전송되는 것을 막습니다.", example: "너는 마케터야 (Shift+Enter)\n이거 분석해 (Enter)", d_type: "card", d_data: { title: "필수 단축키", tags: ["Enter (메시지 최종 전송)", "Shift + Enter (입력창 내 줄바꿈)"] } }
+            ]},
+            
+            // Chapter 2: 프롬프트 작성
+            { id: 2, range: "11-20", title: "프롬프트 작성", icon: "fa-comment-dots", goal: "Claude의 답변을 예측 가능하게 만들기", items: [
+                { title: "역할 프롬프트", desc: "전문가 페르소나 부여", detail: "구체적인 직업과 연차를 부여하면 해당 분야의 최적화된 프레임워크로 대답합니다.", example: "너는 실리콘밸리 10년 차 기획자야.", d_type: "flow", d_data: ["일반 질문", "역할 부여 (10년 차 마케터)", "전문 용어 기반의 고도화된 답변"] },
+                { title: "컨텍스트 구성", desc: "현재 배경과 상황 설명", detail: "예산, 기한, 타겟 고객, 현재 문제점 등 배경 지식을 상세히 알려주어야 맞춤형 답이 나옵니다.", example: "우리 회사는 예산 100만 원의 스타트업이야.", d_type: "hub", d_data: { center: "컨텍스트(배경) 제공 요소", nodes: ["현재 나의 상황", "사용 가능한 예산/기한", "타겟 독자/고객", "현재 겪는 문제점"] } },
+                { title: "사고의 사슬 프롬프트", desc: "단계별 추론 유도 (Chain of Thought)", detail: "바로 정답을 내지 말고 '어떻게 그런 결론이 나왔는지 스텝별로 서술하라'고 강제합니다.", example: "정답을 내기 전에 논리적 근거를 먼저 3단계로 생각해 봐.", d_type: "flow", d_data: ["질문 입력", "Claude 내부 추론 (사고의 사슬)", "검증된 논리적 정답 도출"] },
+                { title: "상황(상황) 프롬프트", desc: "목적과 독자 지정", detail: "결과물을 '누가, 언제, 어디서' 읽을 것인지 명시하여 문체와 깊이를 조절합니다.", example: "이 논문을 비전공자 대표님을 위해 쉽게 요약해.", d_type: "card", d_data: { title: "상황 명시 요소", tags: ["독자: 바쁜 50대 임원", "목적: 1분 내 핵심 파악", "수준: 비전공자 수준 쉽게"] } },
+                { title: "프롬프트 체이닝", desc: "복잡한 작업을 여러 단계로 분할", detail: "한 번에 모든 걸 지시하지 말고, 결과를 확인한 뒤 꼬리를 물며 다음 지시를 내립니다.", example: "1. 목차 짜줘 -> 2. 1번 목차 본문 써줘", d_type: "flow", d_data: ["1단계: 목차 생성", "2단계: 본문 작성", "3단계: 요약 표 생성"] },
+                { title: "출력 형식 지정", desc: "결과물의 시각적 형태 강제", detail: "마크다운 표, JSON, 이메일 양식 등 복사해서 바로 쓸 수 있는 형태를 지정합니다.", example: "결과는 3개 열을 가진 표 형태로만 출력해.", d_type: "card", d_data: { title: "자주 쓰는 출력 형식", tags: ["마크다운 표 (Table)", "글머리 기호 (Bullet)", "JSON 데이터", "이메일 템플릿"] } },
+                { title: "제약적 워크플로우", desc: "절대 규칙(가드레일) 설정", detail: "글자 수 제한, 금지어 등 AI가 엉뚱한 방향으로 새지 않도록 한계를 설정합니다.", example: "인사말 금지, 500자 제한, 한자어 금지.", d_type: "vs", d_data: ["자유 생성\n(TMI 및 불필요한 서론 발생)", "제약 설정\n(원하는 핵심 내용만 정확히 출력)"] },
+                { title: "시스템 프롬프트", desc: "채팅방 전체를 지배하는 절대 룰", detail: "대화 시작 시 룰을 선언하면 매 질문마다 조건을 반복해서 적을 필요가 없습니다.", example: "System: 지금부터 너는 오직 번역기로만 동작해.", d_type: "flow", d_data: ["시스템 룰 세팅", "첫 번째 지시 수행", "열 번째 지시 수행 (룰 계속 유지)"] },
+                { title: "재사용 템플릿", desc: "자주 쓰는 질문의 빈칸 양식화", detail: "변수명([대괄호])을 활용해 템플릿을 저장해 두고 내용물만 갈아 끼워 속도를 높입니다.", example: "역할: 교정가 / 텍스트: [입력] / 지시: 맞춤법 수정", d_type: "card", d_data: { title: "템플릿 구성 요소", tags: ["[역할 Role]", "[맥락 Context]", "[입력 데이터 Input]", "[출력 형태 Format]"] } },
+                { title: "프롬프트 최적화", desc: "AI에게 역제안 요청 (메타 프롬프팅)", detail: "내가 원하는 바를 대충 말하고 '가장 완벽한 결과를 위해 내 질문을 네가 고쳐봐'라고 지시합니다.", example: "내가 완벽한 식단을 얻기 위해 네가 나에게 역으로 질문해 봐.", d_type: "flow", d_data: ["초안 프롬프트 작성", "Claude에게 개선 요청", "최적화된 완벽한 프롬프트 획득"] }
+            ]},
+
+            // Chapter 3: 아티팩트 활용
+            { id: 3, range: "21-30", title: "아티팩트 활용", icon: "fa-layer-group", goal: "인터랙티브한 시각적 결과물 만들기", items: [
+                { title: "아티팩트란 무엇인가", desc: "텍스트 옆 독립된 시각화 캔버스", detail: "코드나 문서를 작성하면 우측 화면에 실제 작동하는 앱이나 깔끔한 뷰어를 띄워주는 혁신적 기능입니다.", example: "UI로 만들어줘 -> 우측에 화면 생성", d_type: "vs", d_data: ["기존 방식\n(텍스트로만 코드/표 출력)", "아티팩트 방식\n(우측에 렌더링된 실제 UI 캔버스 팝업)"] },
+                { title: "아티팩트 유형", desc: "앱, 다이어그램, 차트 등 생성", detail: "React 기반 UI, SVG 그래픽, 마인드맵, Recharts 기반의 통계 차트 등을 지원합니다.", example: "지원 포맷: HTML, SVG, Markdown, React", d_type: "hub", d_data: { center: "생성 가능한 아티팩트", nodes: ["React/Vue 웹 앱", "SVG 벡터 다이어그램", "인터랙티브 차트", "포맷팅된 문서(PDF용)"] } },
+                { title: "아티팩트 프롬프트", desc: "아티팩트 렌더링 명시적 호출", detail: "텍스트로 대답하려는 AI에게 '반드시 독립된 UI 화면(아티팩트)으로 띄워줘'라고 강제합니다.", example: "이 데이터를 막대 차트 아티팩트로 그려줘.", d_type: "flow", d_data: ["데이터 분석 지시", "명시적 지시: '아티팩트로 그려줘'", "우측 캔버스에 차트 시각화"] },
+                { title: "간단한 프로젝트", desc: "자연어로 작동하는 미니 앱 만들기", detail: "코딩을 몰라도 기능만 묘사하면 브라우저 안에서 즉시 작동하는 유틸리티 툴을 소유할 수 있습니다.", example: "25분 타이머 화면 만들어줘.", d_type: "card", d_data: { title: "초보자 추천 미니 프로젝트", tags: ["뽀모도로 타이머", "환율/단위 계산기", "할 일 관리(To-Do)", "설문조사 폼"] } },
+                { title: "반응형 디자인", desc: "모바일/PC 깨짐 방지", detail: "생성 시 CSS 프레임워크인 'Tailwind CSS'를 사용하여 반응형으로 짜달라고 지시하는 필수 팁입니다.", example: "Tailwind를 써서 스마트폰에서도 안 깨지게 만들어.", d_type: "flow", d_data: ["UI 생성 지시", "조건: Tailwind 반응형 적용", "PC/모바일 완벽 호환 웹앱 완성"] },
+                { title: "실시간 편집", desc: "채팅창에서 즉석 수정 요구", detail: "화면을 보며 '버튼 위치 위로 올려' 등 말로 지시하면 실시간으로 코드가 수정 반영됩니다.", example: "배경색 다크모드로 바꿔줘.", d_type: "flow", d_data: ["아티팩트 렌더링 결과 확인", "[채팅] '버튼을 파란색으로 변경해'", "즉시 코드 재작성 및 화면 업데이트"] },
+                { title: "디버깅", desc: "오류 발생 시 에러 로그로 해결", detail: "앱에서 에러가 뜨면 당황하지 않고 증상이나 에러 텍스트를 복사해 주면 알아서 고칩니다.", example: "리셋 버튼 눌렀는데 숫자가 0으로 안 변해.", d_type: "flow", d_data: ["앱 오류 발생", "에러 메시지 복사 후 입력", "Claude가 원인 파악 및 코드 수정"] },
+                { title: "프론트엔드 기초", desc: "구조(HTML), 디자인(CSS), 동작(JS)", detail: "구조를 분리해 요청하면 훨씬 정교하게 앱을 만들 수 있습니다.", example: "HTML: 체크박스 추가 / CSS: 둥근 모서리", d_type: "hub", d_data: { center: "웹앱의 3요소", nodes: ["HTML (구조/뼈대 추가)", "CSS (색상/디자인 화장)", "JS (클릭 이벤트 등 동작)"] } },
+                { title: "프롬프트 재사용", desc: "성공한 아티팩트 코드/프롬프트 보관", detail: "우측 하단 다운로드 버튼으로 코드를 저장하거나 완벽한 폼을 낸 프롬프트를 따로 저장합니다.", example: "이 위젯을 만든 전체 프롬프트를 요약해줘.", d_type: "flow", d_data: ["완벽한 UI 완성", "우측 하단 Code Download", "프롬프트와 함께 노션에 보관"] },
+                { title: "빌드 미니 제품", desc: "나만의 문제 해결 프로덕트", detail: "기능들을 엮어 내 일상을 돕는 완벽한 미니 소프트웨어를 기획하고 완성합니다.", example: "내 식비 계산해 주는 대시보드 앱 기획.", d_type: "card", d_data: { title: "나만의 앱 기획 프레임", tags: ["핵심 페인포인트", "필요한 기능(버튼/입력)", "데이터 처리 로직", "시각화 방식(차트)"] } }
+            ]},
+
+            // Chapter 4: 핵심 스킬
+            { id: 4, range: "31-40", title: "핵심 스킬", icon: "fa-wand-magic-sparkles", goal: "재사용 가능한 AI 워크플로우 구축", items: [
+                { title: "필수 스킬", desc: "요약, 변환, 번역의 공식화", detail: "가장 자주 하는 3대 업무(요약/변환/번역)를 템플릿화하여 반복 노동을 줄입니다.", example: "기본 스킬: 긴 글 -> 3줄 핵심 불릿 요약", d_type: "hub", d_data: { center: "직장인 필수 3대 스킬", nodes: ["요약 (장문 -> 핵심 3줄)", "변환 (줄글 -> 표/이메일)", "번역 (직역 -> 자연스러운 의역)"] } },
+                { title: "스킬 구조화", desc: "5대 요소 프레임워크", detail: "역할, 규칙, 워크플로우, 예시, 출력형식 5가지 빈칸을 채워 나만의 스킬을 설계합니다.", example: "역할: 전문가 / 워크플로우: 1->2->3단계", d_type: "flow", d_data: ["역할 및 규칙 설정", "작업 순서(워크플로우) 명시", "예시(Few-shot) 투입", "완벽한 포맷의 결과 도출"] },
+                { title: "글쓰기 스킬", desc: "문체와 분량의 정교한 디렉팅", detail: "단순한 '써줘'가 아닌 톤앤매너와 문단의 구조를 명확히 설계하여 지시합니다.", example: "도입은 질문, 본론은 데이터, 결론은 행동 촉구로 써.", d_type: "card", d_data: { title: "글쓰기 디렉팅 요소", tags: ["어조 (정중/캐주얼/위트)", "길이 (500자 이내)", "필수 삽입 키워드", "문단 구조 (기승전결)"] } },
+                { title: "리서치 스킬", desc: "방대한 문서 내 조건부 정보 발굴", detail: "PDF 더미에서 '2024년 한국 시장'을 언급한 부분만 찾아서 긍정/부정으로 분류하게 만듭니다.", example: "경쟁사 약점 키워드만 발췌해서 표로 정리해.", d_type: "flow", d_data: ["수백 쪽 문서 업로드", "특정 조건/키워드 지시", "방대한 데이터 필터링", "핵심 정보 발췌(표)"] },
+                { title: "전략적 스킬", desc: "비즈니스 문제 해결 및 대안 평가", detail: "아이디어 도출, 리스크 헷지 등 고차원적 컨설턴트 역할을 지시합니다.", example: "창업 전략 3가지 제시 후 잠재적 리스크 분석해.", d_type: "vs", d_data: ["단순 검색/요약\n(기존 방식)", "전략 기획\n(아이디어 도출 -> 리스크 검증 -> 대안 제시)"] },
+                { title: "스킬 라이브러리", desc: "성공 프롬프트의 체계적 보관", detail: "작동이 잘 된 템플릿들을 노션이나 텍스트 대치 기능으로 분류하여 무기고를 만듭니다.", example: "#마케팅용 #코딩용 카테고리별 저장", d_type: "hub", d_data: { center: "스킬 보관함 구축", nodes: ["마케팅/카피라이팅 템플릿", "코드 리뷰/디버깅 템플릿", "회의록 요약/보고 템플릿"] } },
+                { title: "일관성 유지", desc: "예시(Few-shot)를 활용한 품질 통제", detail: "과거에 잘 썼던 정답 예시를 프롬프트에 고정 삽입하여 매번 동일한 품질을 얻어냅니다.", example: "[예시 1] 제품: ㅇㅇ / 장점: ㅇㅇ 형식 모방", d_type: "vs", d_data: ["예시 없이 지시\n(매번 톤과 양식이 달라짐)", "예시(Few-shot) 삽입 지시\n(항상 일관된 고품질 출력 유지)"] },
+                { title: "환각(Hallucination) 방지", desc: "거짓 정보 차단 안전장치", detail: "규칙에 '문서에 없으면 모른다고 해'를 강제하여 치명적인 비즈니스 오류를 막습니다.", example: "추론 불가 시 절대 지어내지 말 것.", d_type: "flow", d_data: ["데이터 업로드", "[규칙] 문서 내용 기반으로만 대답해", "존재하지 않는 정보 질문 시 '모름' 답변"] },
+                { title: "전문 분야 워크플로우", desc: "스킬 간 체인(Chain) 연결", detail: "요약 -> 글쓰기 -> 해시태그 추출 등 여러 스킬을 하나의 긴 프롬프트에 엮어 자동화합니다.", example: "1. 기사 요약 -> 2. 블로그 작성 -> 3. 태그 추출", d_type: "flow", d_data: ["스킬 1: 뉴스 검색/요약", "스킬 2: 요약본 바탕 블로그 글 생성", "스킬 3: 글에서 해시태그 5개 추출"] },
+                { title: "스크래치부터 시작", desc: "AI에게 역으로 스킬 설계 지시", detail: "템플릿을 짤 줄 모를 때 내 업무를 설명하고 프롬프트 구조 자체를 짜달라고 부탁합니다.", example: "내 영업보고서 자동화 프롬프트를 네가 설계해 줘.", d_type: "flow", d_data: ["내 업무의 페인포인트 설명", "Claude가 필요 정보 역질문", "답변 후 '완벽한 스킬 템플릿' 역제안 받기"] }
+            ]},
+
+            // Chapter 5: 코워커
+            { id: 5, range: "41-50", title: "협업 (코워커)", icon: "fa-users", goal: "Claude를 당신의 팀원처럼 활용하기", items: [
+                { title: "코워커란 무엇인가", desc: "양방향 피드백 파트너 마인드셋", detail: "단방향 정답기가 아니라 빈틈을 메워주고 더 나은 방향을 논의하는 동료로 대하는 방식입니다.", example: "이 아이디어에서 촌스러운 부분 냉정하게 지적해 줘.", d_type: "vs", d_data: ["검색 엔진 모드\n(질문 -> 정답 수동적 수용)", "코워커 모드\n(초안 투척 -> 허점 지적 및 상호 토론)"] },
+                { title: "협업하기", desc: "미완성 아이디어 핑퐁으로 완성", detail: "완벽한 프롬프트를 고민하지 말고 대충 던진 뒤 '이걸 구조화해서 역으로 질문해'라고 시작합니다.", example: "두서없이 말할 테니 구멍 찾아서 질문해 줘.", d_type: "flow", d_data: ["의식의 흐름대로 아이디어 던지기", "Claude가 빈틈 분석 후 역질문", "티키타카 반복하며 기획 완성"] },
+                { title: "리뷰어", desc: "비판적 검토 및 논리적 허점 지적", detail: "내가 작성한 문서나 코드의 결함을 짚어내는 악마의 변호인. 칭찬을 금지시켜야 날카롭습니다.", example: "깐깐한 편집장으로서 칭찬 빼고 매섭게 지적해.", d_type: "persona", d_data: { role: "깐깐한 리뷰어(편집장)", traits: ["칭찬 일절 금지", "가독성 및 논리 비판", "치명적 허점 3가지 리포트"] } },
+                { title: "전략가", desc: "비즈니스 기획 및 돌파구 제시", detail: "위기 상황이나 새로운 목표 앞에서 시장 분석과 차별화 포인트를 제시하는 컨설턴트 역할입니다.", example: "매출 하락 극복을 위한 마케팅 전략 3가지 제안해.", d_type: "persona", d_data: { role: "실리콘밸리 전략 컨설턴트", traits: ["시장 분석 및 트렌드 파악", "경쟁사 대비 차별화 포인트", "예산/타임라인 기반 실행 계획"] } },
+                { title: "리서처", desc: "방대한 데이터 수집 및 패턴 발굴", detail: "수십 장의 문서나 엑셀 데이터를 파헤쳐 필요한 수치와 인사이트만 뽑아냅니다.", example: "정부 정책 PDF에서 지원금 날짜만 표로 정리해.", d_type: "persona", d_data: { role: "꼼꼼한 데이터 리서처", traits: ["방대한 PDF/CSV 스캔", "특정 조건 데이터 발췌", "패턴 분석 및 시각화 표 생성"] } },
+                { title: "에디터", desc: "투박한 초안을 감각적으로 윤문", detail: "내용만 있는 글을 독자에 맞춰 세련되게 다듬고 어조를 변경하는 출판사 에디터 역할입니다.", example: "내 투박한 메모를 인스타 감성 에세이로 포장해 줘.", d_type: "persona", d_data: { role: "트렌디한 매거진 에디터", traits: ["타겟 독자 맞춤 톤앤매너(어조) 변경", "오탈자 교정 및 문맥 다듬기", "센스 있는 해시태그 추가"] } },
+                { title: "선생님/티칭 파트너", desc: "어려운 개념을 눈높이에 맞춰 설명", detail: "새로운 학문이나 코딩을 배울 때 전문 용어를 배제하고 일상적 비유로 설명해 주는 튜터 역할입니다.", example: "양자역학을 초등학생도 알게 요리에 비유해 줘.", d_type: "persona", d_data: { role: "친절한 초등학교 선생님", traits: ["전문 용어 철저히 배제", "일상생활(요리 등) 비유 활용", "이해도 확인을 위한 퀴즈 출제"] } },
+                { title: "플래너", desc: "목표의 구체적 타임라인 수립", detail: "전체 목표를 주차별, 일자별 세부 태스크로 쪼개고 진행 일정을 표로 정리해 줍니다.", example: "앱 출시까지 6개월간 매주 해야 할 마일스톤 짜줘.", d_type: "persona", d_data: { role: "체계적인 PMP 프로젝트 매니저", traits: ["거시적 목표를 마이크로 태스크로 분할", "주차별 데드라인 설정", "칸반(Kanban)/타임라인 표 출력"] } },
+                { title: "멘토 역할 수행", desc: "경험 기반의 따뜻한 현실 조언", detail: "이직 등 정답이 없는 고민에 객관적 분석과 심리적 지지를 제공하는 선배 역할입니다.", example: "20년 차 선배로서 이직 고민에 현실 조언 해줘.", d_type: "persona", d_data: { role: "경험이 풍부한 20년 차 업계 선배", traits: ["현실적인 시장 상황 객관적 분석", "초보자의 실수 방지 가이드", "슬럼프 극복을 위한 멘탈 지지"] } },
+                { title: "운영 지침", desc: "행동 반경을 통제하는 룰 세팅", detail: "페르소나가 맘대로 행동하지 않도록 '두괄식으로 말해' 등의 그라운드 룰을 최초 설정합니다.", example: "내가 리뷰 요청하기 전엔 내 글 수정하지 마.", d_type: "flow", d_data: ["채팅방 오픈", "[운영 지침] 답변은 무조건 두괄식 3줄", "페르소나 역할 부여", "본격적 협업 시작"] }
+            ]},
+
+            // Chapter 6: 커넥터
+            { id: 6, range: "51-60", title: "연결 (커넥터)", icon: "fa-link", goal: "세상과 연결된 Claude 만들기", items: [
+                { title: "커넥터란 무엇인가", desc: "클로드와 외부 데이터를 파이프라인으로 연결", detail: "파일을 매번 복사/업로드하지 않고 구글 드라이브 등을 연동해 AI가 직접 문서를 열람하게 만듭니다.", example: "Claude <--> API 파이프라인 <--> 회사 문서 폴더", d_type: "connector", d_data: "" },
+                { title: "Google Drive", desc: "문서, 스프레드시트 읽기 연동", detail: "특정 폴더 권한을 주면 수백 개의 파일을 스캔해 필요한 데이터를 검색 및 요약해 냅니다.", example: "내 드라이브 '영업기획' 폴더 전체 요약해줘.", d_type: "flow", d_data: ["Google Drive 연동 (특정 폴더)", "프롬프트 지시", "수십 개의 파일 동시 내부 스캔", "결과 요약 리포트 출력"] },
+                { title: "GitHub", desc: "코드 저장소(Repo) 연동 및 분석", detail: "남의 코드를 직접 읽게 하여 비개발자가 구조를 이해하거나 버그 원인을 단번에 파악합니다.", example: "최신 커밋 내역 읽고 버그 수정 내용 3줄 요약해.", d_type: "flow", d_data: ["GitHub 저장소 연동", "복잡한 레거시 코드 스캔", "비개발자용 로직 번역/설명", "버그 발생 지점 탐지"] },
+                { title: "Notion", desc: "팀 지식 베이스(Wiki) 읽기 연동", detail: "워크스페이스를 연결해 파편화된 회의록 속에서 나에게 필요한 액션 아이템만 뽑아냅니다.", example: "주간 회의록 다 읽고 내 이름으로 된 업무만 뽑아.", d_type: "flow", d_data: ["Notion 워크스페이스 연동", "회의록 데이터베이스 스캔", "'김철수' 할당된 미해결 업무 필터링", "Action Item 표 추출"] },
+                { title: "Slack", desc: "메신저 내에서 봇 즉시 호출", detail: "채널에 클로드를 초대해 채팅 중 즉각적인 번역, 긴 대화 요약 등을 지시할 수 있습니다.", example: "@Claude 방금 위에서 나눈 긴 대화 3줄 요약해 봐.", d_type: "flow", d_data: ["Slack 채널에서 토론 진행", "@Claude 멘션 호출", "이전 메시지 문맥 파악", "채팅창 내 요약본 즉시 응답"] },
+                { title: "파일 분석", desc: "대용량 멀티 문서 동시 파싱(Parsing)", detail: "여러 폴더의 수십 개 문서를 동시에 읽어 들여 내용의 모순을 찾거나 크로스 체크를 수행합니다.", example: "기획안 문서와 법무팀 검토 문서를 대조해 줘.", d_type: "hub", d_data: { center: "멀티 문서 크로스 체크", nodes: ["A 문서 (기안서)", "B 문서 (법무팀 가이드라인)", "C 문서 (과거 사례)", "충돌/모순 지점 하이라이트"] } },
+                { title: "Google Sheets 분석", desc: "자연어로 스프레드시트 데이터 조작", detail: "엑셀 함수 없이 데이터가 꽉 찬 시트를 연결해 '매출 추이 피벗테이블 그려'라고 지시합니다.", example: "설문 응답 시트 분석해서 20대 불만 키워드 뽑아.", d_type: "flow", d_data: ["수만 줄의 스프레드시트 연동", "자연어 질의 (매출 높은 제품 찾아)", "내부적으로 엑셀/데이터 함수 처리", "최종 차트 및 리포트 반환"] },
+                { title: "워크플로우 연동", desc: "A앱 데이터 가공 후 B앱으로 전송", detail: "슬랙 메시지를 읽고 노션 문서로 예쁘게 작성해 넣는 등 앱 간 데이터 이동을 자동화합니다.", example: "슬랙 고객 클레임 -> 감정 분석 -> 노션에 정리", d_type: "flow", d_data: ["[A앱] Slack 고객 클레임 메시지 캡처", "Claude 감정 분석 및 리포트 양식화", "[B앱] Notion 데이터베이스에 문서 자동 저장"] },
+                { title: "웹 검색 연동", desc: "실시간 최신 인터넷 정보 서치", detail: "클로드에게 구글링 권한을 주어 오늘 날짜의 뉴스나 주식을 반영한 답변을 생성합니다.", example: "오늘 뉴스 검색해서 테슬라 하락 원인 요약해.", d_type: "vs", d_data: ["기존 모델\n(과거 학습 데이터 한계)", "웹 검색 연동 모델\n(실시간 뉴스/주가/트렌드 스크래핑 반영)"] },
+                { title: "데이터 접근", desc: "권한 최소화(보안) 원칙", detail: "기밀 유출 방지를 위해 반드시 클로드 전용 '읽기 전용' 폴더를 만들어 제한적으로 연결해야 합니다.", example: "전체 드라이브(X) -> 특정 공유 폴더만 권한(O)", d_type: "card", d_data: { title: "커넥터 보안 수칙", tags: ["전체 드라이브 권한 부여 절대 금지", "전용 '읽기 전용' 공유 폴더 생성", "주민번호 등 민감 개인정보 파일 원천 배제"] } }
+            ]},
+
+            // Chapter 7: 자동화
+            { id: 7, range: "61-70", title: "자동화", icon: "fa-gears", goal: "Claude로 업무 프로세스 자동화하기", items: [
+                { title: "MCP란 무엇인가", desc: "클로드와 로컬 환경 간의 표준 USB 포트", detail: "브라우저에 갇힌 AI가 내 컴퓨터 내부 파일, 로컬 DB, 사내 시스템과 직접 통신하는 규약입니다.", example: "Claude Desktop App <-> 내 바탕화면 폴더", d_type: "hub", d_data: { center: "MCP 연결 생태계", nodes: ["내 컴퓨터 로컬 파일/폴더", "사내 보안 인트라넷", "로컬 SQLite 데이터베이스", "각종 개발/업무 툴 API"] } },
+                { title: "MCP가 중요한 이유", desc: "복사/붙여넣기 노동 종말과 로컬 데이터 통합", detail: "문서를 업로드할 필요 없이 '내 바탕화면 프로젝트 폴더 읽어'로 AI가 파일을 직접 찾아 읽습니다.", example: "내 로컬의 2월 매출 엑셀 열어서 분석해.", d_type: "vs", d_data: ["과거: 파일 찾기 -> 브라우저 업로드 -> 분석 지시", "MCP: 'C드라이브 매출 폴더 분석해' -> 직접 스캔 완료"] },
+                { title: "AI 에이전트", desc: "계획하고 행동(도구 사용)하는 AI", detail: "스스로 계획을 세우고, 웹 검색 등 도구를 사용하며, 결과를 검증하여 임무를 자율 완수합니다.", example: "내일 제주도 출장용 비행기 검색 후 예약해.", d_type: "card", d_data: { title: "Agent의 작동 4단계", tags: ["1. Plan (목표 달성 계획 수립)", "2. Use Tool (웹 검색, 계산기 조작)", "3. Act (예약 폼 작성, 메일 전송)", "4. Verify (최종 결과 검증 및 보고)"] } },
+                { title: "자동화 워크플로우", desc: "트리거(조건)와 액션(실행) 시스템", detail: "특정 상황이 발생하면 정해진 행동을 하는 블록을 연결합니다. '메일 오면 요약해서 슬랙 전송' 구조입니다.", example: "트리거: 새 견적 메일 -> 액션: 요약 후 알림", d_type: "flow", d_data: ["Trigger: VIP 고객 불만 메일 수신", "Action 1: Claude 감정 분석 및 사과문 초안 작성", "Action 2: 담당자 슬랙으로 초안 긴급 전송"] },
+                { title: "API 기초", desc: "프로그램 통신 웨이터(API) 개념", detail: "코딩을 몰라도 앱끼리 데이터를 주고받는 요청 통로(API)의 개념을 알아야 연동 툴을 쓸 수 있습니다.", example: "클로드 -> 날씨 API 호출 -> 날씨 데이터 반환", d_type: "vs", d_data: ["GUI (사람용)\n마우스로 버튼 클릭, 시각적 확인", "API (기계용)\n데이터를 주고받는 백도어(웨이터) 통로"] },
+                { title: "Zapier", desc: "수천 개 앱을 엮는 노코드 자동화 툴", detail: "개발자 없이 기획자가 직접 Gmail, Slack, Claude를 블록처럼 조립해 자동화 파이프라인을 만듭니다.", example: "구글 폼 응답 들어오면 -> Claude 요약 -> 팀 전송", d_type: "card", d_data: { title: "Zapier/Make 노코드 툴 특징", tags: ["코딩 지식 불필요 (시각적 블록 조립)", "수천 개의 앱 (Gmail, Notion 등) 지원", "24시간 서버 백그라운드 자동 실행"] } },
+                { title: "자동화 만들기", desc: "메모 -> 블로그 자동 발행 파이프라인", detail: "에버노트에 아이디어를 쓰면 클로드가 글로 다듬어 워드프레스에 임시 저장하는 첫 세팅 실습입니다.", example: "텔레그램 메모 -> Claude 윤문 -> 노션 자동 등록", d_type: "flow", d_data: ["에버노트/텔레그램에 아이디어 메모 작성", "Zapier가 이를 감지하여 Claude로 데이터 토스", "Claude가 블로그용 완벽한 글로 포맷팅", "워드프레스/노션 '임시저장함' 자동 등록"] },
+                { title: "에이전트 시스템", desc: "여러 특화 AI의 컨베이어 벨트 협업", detail: "리서처, 작가, 검수자 등 분업화된 AI 모델들을 직렬로 연결(Prompt Chaining)해 품질을 극대화합니다.", example: "리서처 AI -> 작가 AI -> 검수자 AI 순서로 일하기", d_type: "flow", d_data: ["AI 1 (리서처): 최신 뉴스 10개 크롤링 및 요약", "AI 2 (에디터): 요약본을 바탕으로 SNS 카드뉴스 텍스트 작성", "AI 3 (검열관): 맞춤법 및 컴플라이언스 최종 확인"] },
+                { title: "가드레일 설정", desc: "대형 사고 방지용 인적 승인(Human-in-the-loop)", detail: "메일 자동 발송 등 치명적 액션 앞에는 반드시 '담당자 승인(버튼)' 단계를 넣어 폭주를 통제합니다.", example: "메일 전송 전 '발송할까요? [승인]' 버튼 먼저 띄우기", d_type: "flow", d_data: ["Claude가 사과 메일 초안 작성 및 발송 준비 완료", "시스템 정지 -> 담당자 슬랙으로 [승인/반려] 버튼 전송", "담당자 확인 후 '승인' 클릭 시에만 최종 메일 발송"] },
+                { title: "자율 실행", desc: "큰 목표(Goal) 단위의 자율 지시", detail: "세부 지시 없이 큰 목표만 던지면 AI가 스스로 검색, 예약, 정리 과정을 모두 주도하여 완수합니다.", example: "내일 신제품 출시 메일링 1,000건 자율 진행해.", d_type: "hub", d_data: { center: "목표: 내일 출장 준비 완수", nodes: ["캘린더 일정 확인", "최적 비행기표 API 검색/예약", "행사장 근처 호텔 추천 리스트 작성", "최종 일정표 슬랙 보고"] } }
+            ]},
+
+            // Chapter 8: Claude Code
+            { id: 8, range: "71-80", title: "Claude Code", icon: "fa-laptop-code", goal: "Claude Code로 개발 효율 극대화", items: [
+                { title: "Claude Code 개요", desc: "로컬 터미널에서 구동되는 코딩 비서", detail: "브라우저 챗을 넘어 개발 도구(VS Code) 내부에서 내 파일을 직접 생성/수정/삭제하는 CLI 도구입니다.", example: "현재 폴더의 CSS 미사용 클래스 다 찾아서 지워.", d_type: "terminal", d_data: "" },
+                { title: "Explain Code Simply", desc: "외계어 같은 레거시 코드 번역", detail: "수천 줄의 서버 코드를 비개발자/기획자도 이해할 수 있게 비유를 들어 쉽게 3줄로 설명하게 만듭니다.", example: "이 auth.py 로직을 은행 창구에 비유해 설명해 줘.", d_type: "flow", d_data: ["수천 줄의 복잡한 스파게티 코드 스캔", "Claude의 로직/아키텍처 분석", "비개발자도 이해 가능한 '은행 창구' 비유로 3줄 요약"] },
+                { title: "디버깅 오류 & 파일", desc: "에러 로그 복사만으로 버그 원패스 수정", detail: "에러 창의 텍스트를 복사해 주면 클로드가 정확한 파일 위치를 찾고 수정 코드를 제시해 냅니다.", example: "TypeError: Cannot read properties 에러 해결해.", d_type: "terminal", d_data: "" },
+                { title: "Refactor Code", desc: "낡은 코드를 속도 빠르고 깔끔하게 재정비", detail: "동일한 기능을 유지하면서 지저분한 if문을 줄이고 최신 문법과 클린 아키텍처에 맞게 다듬습니다.", example: "중첩이 너무 깊어. Early Return 패턴으로 정리해.", d_type: "vs", d_data: ["스파게티 코드 (Refactor 전)\n(유지보수 불가, 느린 속도, 가독성 최악)", "클린 코드 (Refactor 후)\n(모듈화, 최신 문법 적용, 직관적 변수명)"] },
+                { title: "Full Stack 프로젝트", desc: "프론트/백엔드를 동시에 구축", detail: "UI 디자인부터 서버 DB 로직까지, 전체 앱의 구조를 아키텍트처럼 기획하고 뼈대 코드를 뽑아냅니다.", example: "로그인 되는 게시판을 Next.js와 Supabase로 짜줘.", d_type: "hub", d_data: { center: "1인 풀스택 자동 생성", nodes: ["Next.js (프론트 UI 뼈대)", "Tailwind CSS (반응형 디자인)", "Node.js (서버 API 라우트)", "Supabase (인증 및 DB)"] } },
+                { title: "문서 작성", desc: "Python 코드를 활용한 오피스 파일 자동화", detail: "클로드가 로컬에서 Python을 돌려 템플릿의 빈칸을 채운 뒤 실제 PPT/엑셀 파일을 내 컴퓨터에 생성합니다.", example: "데이터 읽어서 PPT 템플릿 빈칸 채우고 새로 저장해.", d_type: "flow", d_data: ["로고 이미지 + 매출 CSV 데이터 인풋", "Claude가 python-pptx 라이브러리 스크립트 작성 및 실행", "기존 PPT 템플릿 빈칸에 데이터/차트 바인딩", "내 바탕화면에 '최종보고서.pptx' 파일 자동 생성"] },
+                { title: "단위 테스트 & 분석", desc: "버그 예방용 자동화 테스트 코드 작성", detail: "함수 작성 후 '문자열 입력 시, 0으로 나눌 시' 등의 예외 상황을 모두 검증하는 테스트 코드를 요구합니다.", example: "이 비밀번호 검증 함수의 모든 엣지케이스 테스트 짜줘.", d_type: "flow", d_data: ["핵심 비즈니스 로직 작성 완료", "명령: '이 코드의 예외상황(Edge case) 테스트 코드 작성해'", "Jest/PyTest 기반 단위 테스트 자동 생성", "잠재적 버그 사전 차단"] },
+                { title: "베스트 프랙티스", desc: "업계 최고 수준의 표준 강제 적용", detail: "단순한 코딩을 넘어 '시니어 개발자 수준의 최신 보안 표준과 패턴을 완벽히 지켜서 짜라'고 가이드합니다.", example: "보안 취약점 배제하고 TypeScript 베스트 프랙티스 써.", d_type: "card", d_data: { title: "시니어급 코드 강제 요건", tags: ["TypeScript 엄격한 타입(Any 금지)", "최신 React Hooks 최적화 패턴", "웹 접근성(a11y) 표준 준수", "XSS/SQL 인젝션 방어 로직"] } },
+                { title: "개발 워크플로우 팁", desc: "CLAUDE.md 파일을 활용한 팀 규칙 학습", detail: "프로젝트 폴더 최상단에 지침(CLAUDE.md)을 두어, 클로드가 코드 컨벤션을 스스로 지키게 만듭니다.", example: "우리 팀은 CSS-in-JS만 쓴다는 지침을 파일에 저장.", d_type: "flow", d_data: ["프로젝트 최상단 CLAUDE.md 생성", "팀 컨벤션 작성 (Vue3, Tailwind 강제 등)", "Claude가 코딩 전 파일 자동 참조", "팀 표준에 완벽히 맞는 코드 출력"] },
+                { title: "더 나은 코드 배포", desc: "인터넷에 앱 배포 파이프라인(CI/CD) 도움", detail: "완성된 로컬 앱을 Vercel 등에 호스팅하여 남들도 접속하게 만드는 배포 세팅 과정을 가이드 받습니다.", example: "이 프로젝트를 Vercel에 배포하는 1~5단계 알려줘.", d_type: "flow", d_data: ["로컬 웹앱 개발 완료", "GitHub 저장소 Push 지시 및 도움", "Vercel / Netlify 클라우드 연동", "전 세계 누구나 접속 가능한 URL 확보"] }
+            ]},
+
+            // Chapter 9: 실전 활용 사례
+            { id: 9, range: "81-90", title: "실전 활용 사례", icon: "fa-briefcase", goal: "일상생활에서 Claude 완벽 활용하기", items: [
+                { title: "고급 프롬프트", desc: "조건문(If-Then) 논리 구조 포함", detail: "텍스트에 분기 처리를 넣어 타겟(20대/40대)에 따라 완전히 다른 톤앤매너와 양식이 출력되도록 통제합니다.", example: "If 20대 -> 밈 사용 / If 40대 -> 데이터 기반 정중하게", d_type: "flow", d_data: ["입력 데이터 (신제품 스펙)", "조건 분기 (If 타겟=20대, Else If 타겟=40대)", "각 조건에 맞는 다중 결과물 동시 출력"] },
+                { title: "커스텀 워크플로우", desc: "특정 직무에 핏(Fit)된 맞춤형 파이프라인", detail: "일반적 요약이 아닌 '인사담당자의 이력서 필터링 시스템'처럼 직무 룰베이스가 결합된 컨베이어 벨트입니다.", example: "50장 중 Python 3년 차 이상만 뽑아 장단점 정리해.", d_type: "workflow", d_data: "" },
+                { title: "멀티 에이전트 시스템", desc: "AI 간의 논쟁과 협업 시뮬레이션", detail: "단일 답변이 아닌, 기획 AI와 비판 AI가 서로 창과 방패처럼 논리적 대결을 펼친 후 최적의 절충안을 도출합니다.", example: "A안과 B안을 각각 비판하고 절충된 C안을 최종 도출해.", d_type: "flow", d_data: ["제안자 AI (A안 기획 완료)", "비평가 AI (예산 및 타겟팅 논리적 공격)", "제안자 방어 및 수정", "최상의 타협점(C안) 도출"] },
+                { title: "고급 협업", desc: "실시간 역할극 교대 다이내믹 인터랙션", detail: "일방적 지시를 넘어, AI가 면접관이 되어 나에게 꼬리물기 압박 질문을 던지고 피드백을 주는 시뮬레이션입니다.", example: "네가 면접관이 되어 압박 질문을 던지고 틀리면 교정해.", d_type: "vs", d_data: ["단방향 프롬프팅\n(나는 질문자, AI는 답변자 고정)", "상호작용 시뮬레이션\n(AI가 면접관이 되어 내게 꼬리질문 및 압박)"] },
+                { title: "확장 가능한 시스템", desc: "개인을 넘어 팀 전용 표준 가이드 배포", detail: "나 혼자 쓰는 프롬프트를 템플릿화하여 노션에 공유, 팀원 누구나 일관된 고품질 보고서를 쓰게 만듭니다.", example: "팀 공용 회의록 템플릿 배포 (실무/보고/고객용 분류)", d_type: "hub", d_data: { center: "조직 내 시스템 확장", nodes: ["나만의 고효율 프롬프트 완성", "사내 Notion 템플릿화", "팀원 누구나 변수만 입력해 사용", "부서 전체 생산성 300% 향상"] } },
+                { title: "성능 튜닝", desc: "비용(토큰)은 줄이고 정확도는 100%로 깎기", detail: "불필요한 맥락을 쳐내고, 치명적인 Negative Prompt(금지사항)를 촘촘히 덧대어 원하는 정답만 레이저처럼 뽑아냅니다.", example: "재밌게 써줘 -> 유머러스하되 이모티콘과 ㅋㅋ는 금지", d_type: "vs", d_data: ["튜닝 전 장황한 프롬프트\n(토큰 낭비, AI 혼란, 할루시네이션)", "튜닝된 압축 프롬프트\n(불필요 맥락 제거, 명확한 제약, 고품질 예시 1개)"] },
+                { title: "Deep Research 업무", desc: "수치 기반 논리적 상관관계 심층 분석", detail: "단순 검색을 넘어, 복수 엑셀의 마케팅비-영업이익률 상관관계를 통계적으로 추론하는 고차원 리서치입니다.", example: "경쟁사 5개년 매출.csv 비교해서 급상승 요인 추론해.", d_type: "flow", d_data: ["경쟁사 A, B, C 재무제표 CSV 다중 업로드", "마케팅 예산 vs 영업이익률 교차 분석", "데이터 기반의 숨겨진 상관관계 도출", "시각화 다이어그램 및 리포트"] },
+                { title: "비즈니스 자동화", desc: "리소스를 극도로 절감하는 오토파일럿", detail: "고객 DM 응대, 견적서 발송, 정산 등 병목 구간을 AI 에이전트와 Zapier로 엮어 사람의 개입을 없앱니다.", example: "고객 문의 -> 의도 파악 -> 재고 조회 -> 자동 답변 전송", d_type: "workflow", d_data: "" },
+                { title: "나만의 시스템 구축", desc: "24시간 개인 맞춤형 중앙 사령부(Dashboard)", detail: "출근 전 클로드가 캘린더, 이메일을 싹 훑고 '오늘 우선 태스크 3가지'를 브리핑해 주는 궁극의 비서 세팅입니다.", example: "아침 8시 실행 -> 밤새 온 메일 요약 -> 슬랙 리포트 전송", d_type: "flow", d_data: ["매일 아침 8시 자동 트리거 작동", "읽지 않은 메일 + 캘린더 + 주식 시황 취합", "Claude가 맥락 분석 및 중요도 순위 매김", "내 카카오톡/슬랙으로 3줄 모닝 브리핑 전송"] },
+                { title: "마스터 클래스", desc: "모든 기술을 융합한 나만의 마스터피스", detail: "프롬프트, 아티팩트, MCP를 생태계로 엮어 업무 시간을 실제로 80% 이상 단축시킨 결과물을 증명합니다.", example: "아이디어 입력 1번으로 기획/코드/슬랙 공유가 원클릭에 완료", d_type: "hub", d_data: { center: "업무 시간 80% 단축 마스터피스", nodes: ["프롬프트 엔지니어링 (정확성)", "아티팩트 (즉각적 시각화/UI)", "MCP (로컬 파일 제어)", "Zapier 파이프라인 (24시간 동작)"] } }
+            ]},
+
+            // Chapter 10: 파워 유저
+            { id: 10, range: "91-100", title: "파워 유저", icon: "fa-crown", goal: "진정한 파워 유저 되기", items: [
+                { title: "진행판 따위 외치 되기", desc: "틀을 깨고 AI에게 질문 주도권 넘기기", detail: "인터넷의 복붙 프롬프트를 버리고, '내가 이걸 원하는데 네가 알아서 최적의 질문과 계획을 역제안해'라며 판을 리드합니다.", example: "내가 소설을 쓸 건데, 나에게 필요한 5가지 질문부터 해.", d_type: "vs", d_data: ["초보자 마인드\n(남이 만든 프롬프트 템플릿 검색)", "파워 유저 마인드\n(목표만 던지고 AI가 스스로 최적의 템플릿 설계)"] },
+                { title: "시스템 구축", desc: "마스터 워크플로우(Master Workflow) 설계", detail: "데이터가 들어오면 조건에 따라 이리저리 라우팅(Routing)되어 최종 결과물까지 한 줄기로 뽑아내는 거대한 아키텍처입니다.", example: "입력 -> 판별(번역?코드?) -> 전문 AI 분배 -> 최종 노션 발행", d_type: "flow", d_data: ["Raw 데이터 무작위 입력", "Master AI가 목적 판별 (번역/디자인/코드)", "각 전담 서브 에이전트로 라우팅 분배", "통합 리뷰어 검수 후 최종 퍼블리싱"] },
+                { title: "자동화", desc: "Zero-touch 예외 처리 완벽 파이프라인", detail: "트리거를 누를 필요조차 없이 알아서 돌아가며, 에러 시 AI 스스로 재시도(Retry)하는 무결점 자동화입니다.", example: "자정 영수증 스캔 -> 엑셀 업데이트 -> 이상 시에만 알림", d_type: "flow", d_data: ["매월 1일 자정 크론탭(Cron) 자동 실행", "전월 영수증 폴더 OCR 전체 스캔", "AI 회계 판별 중 에러 발생 시 스스로 재시도(Retry)", "엑셀 마감 완료 및 리포트 자동 전송"] },
+                { title: "고도화", desc: "단 한 번의 예외도 허용하지 않는 디테일 깎기", detail: "시스템이 엉뚱한 답을 냈다면 즉시 프롬프트에 예외 처리 규칙(가드레일)을 추가해 시스템을 영구적으로 진화시킵니다.", example: "날짜 오류 발생 -> 규칙에 'YYYY-MM-DD 강제' 추가 패치", d_type: "flow", d_data: ["실전 운영 중 AI 할루시네이션(예외) 발생", "원인 분석: 특정 조건의 맥락이 프롬프트에 부재", "프롬프트 내 Negative Rule(금지조항) 즉각 패치", "시스템 영구적 진화 완료"] },
+                { title: "확장 가능한 솔루션", desc: "사내 공용 툴 배포 및 제품화(SaaS)", detail: "내가 만든 파이프라인에 간단한 UI를 덧붙여 사내 전용 웹 서비스로 배포하거나 수익을 창출하는 PO 관점입니다.", example: "경쟁사 프롬프트 + UI 결합 = 부서 전용 분석 웹 툴 론칭", d_type: "hub", d_data: { center: "솔루션의 무한 확장(Scale-up)", nodes: ["나만의 파이프라인 로직 완성", "Streamlit/Gradio 등 심플 UI 결합", "사내 팀원 전용 웹 링크 배포", "구독형 SaaS 수익 모델 기획"] } },
+                { title: "성능 튜닝", desc: "토큰 비용 최소화 및 성능 극대화 장인 정신", detail: "의미가 중복되는 단어를 압축하고 가장 임팩트 있는 예시 1개만 남겨 최고의 가성비와 100%의 정확도를 뽐냅니다.", example: "500자 장황 지시 -> 50자 압축 + 완벽한 Few-shot 1개", d_type: "vs", d_data: ["튜닝 전 (토큰 낭비 심각)\n'안녕 너는 똑똑하니까 오탈자 띄어쓰기 다 고쳐서...'", "튜닝 후 (토큰 최소화, 성능 극대화)\n'[Role: Editor] 오탈자 교정 후 결과만 표로 출력. [예시: ...]'"] },
+                { title: "깊이 있는 연구", desc: "AI 생태계 프론티어 신기술 즉각 흡수", detail: "클로드의 새 버전, MCP 업데이트, 최신 프롬프트 논문이 나오면 즉각 내 워크플로우에 접목하는 탐구 자세입니다.", example: "Computer Use API 발표 당일 밤새 시스템 업그레이드 테스트", d_type: "card", d_data: { title: "파워 유저의 지식 탐구 영역", tags: ["최신 LLM 모델 논문/벤치마크 팔로우업", "신규 MCP 도구 오픈소스 커뮤니티 참여", "어제 구축한 시스템도 과감히 폐기/업그레이드"] } },
+                { title: "비즈니스 자동화", desc: "대표는 의사결정만 하는 오토파일럿 1인 기업", detail: "고객 확보, CS, 콘텐츠 발행, 정산까지 밸류체인 구석구석에 AI 에이전트를 배치해 100명 규모의 아웃풋을 냅니다.", example: "마케팅 봇 -> 세일즈 봇 -> 회계 봇 -> 대표는 금요일 최종 승인만", d_type: "flow", d_data: ["콘텐츠 봇 (자동 포스팅 및 트래픽 유도)", "세일즈 봇 (DM 자동 응대 및 결제 링크 발송)", "회계 봇 (매주 금요일 정산 내역 엑셀 덤프)", "대표(Human)는 의사결정 '승인' 클릭 1번만 수행"] },
+                { title: "나만의 시스템 구축", desc: "AI 중앙 사령부(Command Center) 완성", detail: "여기저기 흩어진 툴들을 노션 기반 대시보드로 통합하여 수십 개의 자동화 봇들의 상태를 한눈에 통제합니다.", example: "노션에 프롬프트 DB, 봇 에러 로그, 성과 리포트 통합뷰 세팅", d_type: "hub", d_data: { center: "Notion Command Center", nodes: ["목적별 프롬프트 마스터 라이브러리 DB", "Zapier 자동화 봇 실시간 에러 로그 모니터링", "각 에이전트들의 일일 성과 리포트 자동 취합"] } },
+                { title: "마스터 클래스 수료", desc: "무한한 확장력을 가진 복제인간 컨트롤러", detail: "단순 질문자를 넘어 흔들리지 않는 자동화 로직의 본질을 깨우친 시스템 설계자(Architect)로 거듭났습니다.", example: "클로드는 비서가 아닌 24시간 잠들지 않는 복제 파트너.", d_type: "card", d_data: { title: "Congratulation! 🎉", tags: ["단순 질문자(Prompter) 탈피 완료", "지능형 시스템 설계자(Architect) 등극", "AI와 함께 당신만의 새로운 비즈니스를 창조하세요!"] } }
+            ]}
         ];
+
+        // Specific Diagram Renderer based on individual d_data
+        function renderDiagram(item) {
+            const type = item.d_type;
+            const data = item.d_data;
+            if(!data) return '';
+
+            if (type === 'flow') {
+                let html = '<div class="diag-box"><div class="flex flex-col md:flex-row justify-center items-center gap-3">';
+                data.forEach((step, idx) => {
+                    html += `<div class="d-node w-full md:w-auto flex-1">${step.replace(/\n/g, '<br>')}</div>`;
+                    if (idx < data.length - 1) {
+                        html += `<div class="text-gray-300"><i class="fa-solid fa-arrow-right text-lg hidden md:block"></i><i class="fa-solid fa-arrow-down text-lg md:hidden"></i></div>`;
+                    }
+                });
+                html += '</div></div>';
+                return html;
+            } 
+            else if (type === 'vs') {
+                return `
+                    <div class="diag-box"><div class="flex flex-col md:flex-row gap-4 justify-center items-stretch">
+                        <div class="d-node-gray w-full md:w-1/2 flex items-center justify-center">
+                            <div><span class="block text-xs font-bold text-gray-400 mb-1">Before / 기존</span>${data[0].replace(/\n/g, '<br>')}</div>
+                        </div>
+                        <div class="flex items-center justify-center text-claude-300 font-black italic text-xl px-2">VS</div>
+                        <div class="d-node w-full md:w-1/2 flex items-center justify-center bg-orange-50">
+                            <div><span class="block text-xs font-bold text-claude-400 mb-1">After / 파워 유저</span>${data[1].replace(/\n/g, '<br>')}</div>
+                        </div>
+                    </div></div>`;
+            }
+            else if (type === 'hub') {
+                let nodesHtml = '';
+                data.nodes.forEach(node => {
+                    nodesHtml += `<div class="bg-gray-50 border border-gray-200 text-gray-700 font-semibold px-3 py-2 rounded shadow-sm text-xs text-center z-10 w-32 md:w-40 break-keep">${node}</div>`;
+                });
+                return `
+                    <div class="diag-box py-8 relative overflow-hidden"><div class="flex flex-col items-center justify-center relative">
+                        <div class="absolute inset-0 flex items-center justify-center opacity-10"><i class="fa-solid fa-arrows-spin text-8xl text-claude-500 animate-[spin_20s_linear_infinite]"></i></div>
+                        <div class="bg-claude-500 text-white font-bold px-6 py-3 rounded-full shadow-md z-20 mb-6 border-4 border-white text-center">${data.center}</div>
+                        <div class="flex flex-wrap justify-center gap-4 z-10">${nodesHtml}</div>
+                    </div></div>`;
+            }
+            else if (type === 'card') {
+                let tagsHtml = '';
+                data.tags.forEach(tag => { tagsHtml += `<span class="bg-orange-50 text-claude-600 border border-orange-100 px-3 py-1.5 rounded-md text-xs font-bold whitespace-nowrap shadow-sm"><i class="fa-solid fa-check text-claude-400 mr-1"></i>${tag}</span>`; });
+                return `
+                    <div class="diag-box"><div class="text-center mb-4"><span class="bg-gray-800 text-white px-3 py-1 rounded text-xs font-bold">${data.title}</span></div>
+                    <div class="flex flex-wrap justify-center gap-2">${tagsHtml}</div></div>`;
+            }
+            else if (type === 'terminal') {
+                return `
+                    <div class="bg-[#1e1e1e] rounded-lg overflow-hidden my-4 shadow-md border border-gray-700 max-w-2xl mx-auto">
+                        <div class="bg-[#323233] px-3 py-1.5 flex items-center gap-1.5 border-b border-black">
+                            <div class="w-2.5 h-2.5 rounded-full bg-red-500"></div><div class="w-2.5 h-2.5 rounded-full bg-yellow-500"></div><div class="w-2.5 h-2.5 rounded-full bg-green-500"></div>
+                            <span class="ml-2 text-[10px] text-gray-400 font-mono">claude_terminal</span>
+                        </div>
+                        <div class="p-4 text-xs font-mono leading-relaxed text-gray-300">
+                            <span class="text-green-400">user@mastery</span><span class="text-white">:</span><span class="text-blue-400">~</span>$ claude execute<br>
+                            <span class="text-yellow-300">> Analyzing environment & code...</span><br>
+                            <span class="text-white">✨ Task completed successfully!</span><br>
+                            <span class="text-gray-500">Logs generated.</span>
+                        </div>
+                    </div>`;
+            }
+            else if (type === 'connector') {
+                 return `
+                    <div class="diag-box bg-gray-50 border-gray-200"><div class="flex justify-center items-center gap-2 md:gap-4">
+                        <div class="text-center w-20 md:w-24"><div class="w-12 h-12 bg-claude-500 text-white rounded-xl flex items-center justify-center text-2xl mx-auto mb-2 shadow-md"><i class="fa-solid fa-asterisk"></i></div><span class="text-xs font-bold text-gray-800">Claude</span></div>
+                        <div class="flex flex-col items-center flex-1">
+                            <span class="text-[10px] font-bold text-blue-500 mb-1 bg-blue-50 px-2 py-0.5 rounded border border-blue-100">API Pipeline / MCP</span>
+                            <div class="flex w-full items-center"><div class="h-1 bg-gradient-to-r from-claude-300 to-blue-400 flex-1 rounded-l"></div><i class="fa-solid fa-arrows-left-right text-blue-500 px-2 text-sm"></i><div class="h-1 bg-gradient-to-r from-blue-400 to-gray-300 flex-1 rounded-r"></div></div>
+                        </div>
+                        <div class="text-center w-20 md:w-24"><div class="w-12 h-12 bg-white text-blue-600 border border-gray-200 rounded-xl flex items-center justify-center text-2xl mx-auto mb-2 shadow-sm"><i class="fa-brands fa-google-drive"></i></div><span class="text-xs font-bold text-gray-600">외부 파일/앱</span></div>
+                    </div></div>`;
+            }
+            else if (type === 'persona') {
+                return `
+                    <div class="diag-box bg-indigo-50 border-indigo-100"><div class="flex flex-col md:flex-row items-center gap-4">
+                        <div class="w-16 h-16 bg-white text-indigo-500 rounded-full flex items-center justify-center text-3xl shadow-sm shrink-0 border border-indigo-100"><i class="fa-solid fa-user-tie"></i></div>
+                        <div class="text-center md:text-left">
+                            <div class="text-[10px] font-bold text-indigo-500 mb-1 uppercase tracking-wider">Assigned Persona</div>
+                            <div class="font-bold text-gray-800 text-lg leading-tight mb-2">${data.role}</div>
+                            <div class="flex flex-wrap justify-center md:justify-start gap-1">
+                                ${data.traits.map(t => `<span class="bg-white border border-indigo-100 text-gray-600 px-2 py-0.5 rounded text-[10px] font-semibold">${t}</span>`).join('')}
+                            </div>
+                        </div>
+                    </div></div>`;
+            }
+            else if (type === 'workflow') {
+                return `
+                    <div class="diag-box border-dashed border-2"><div class="flex flex-col md:flex-row justify-center items-center gap-3 text-sm">
+                        <div class="bg-gray-50 border border-gray-200 p-3 rounded shadow-sm text-center font-bold text-gray-600 flex-1 w-full"><span class="text-[10px] block text-gray-400">Trigger</span>입력 데이터<br><i class="fa-solid fa-bolt text-yellow-500 mt-1"></i></div>
+                        <div class="text-gray-300"><i class="fa-solid fa-arrow-right text-lg hidden md:block"></i><i class="fa-solid fa-arrow-down text-lg md:hidden"></i></div>
+                        <div class="bg-claude-50 border border-claude-300 p-3 rounded shadow-sm text-center font-bold text-claude-600 flex-1 w-full"><span class="text-[10px] block text-claude-400">Action</span>Claude 처리 로직<br><i class="fa-solid fa-brain text-claude-500 mt-1"></i></div>
+                        <div class="text-gray-300"><i class="fa-solid fa-arrow-right text-lg hidden md:block"></i><i class="fa-solid fa-arrow-down text-lg md:hidden"></i></div>
+                        <div class="bg-green-50 border border-green-200 p-3 rounded shadow-sm text-center font-bold text-green-700 flex-1 w-full"><span class="text-[10px] block text-green-500">Output</span>최종 발행/전송<br><i class="fa-solid fa-paper-plane text-green-500 mt-1"></i></div>
+                    </div></div>`;
+            }
+            return '';
+        }
 
         // Setup DOM Elements
         const homeView = document.getElementById('home-view');
         const chapterView = document.getElementById('chapter-view');
         const roadmapContainer = document.getElementById('roadmap-container');
         const chapterContent = document.getElementById('chapter-content');
-        const breadcrumb = document.getElementById('breadcrumb');
-        
         const uiChapterBadge = document.getElementById('chapter-number-badge');
-        const uiDetailRange = document.getElementById('detail-range-badge');
         const uiChapterTitle = document.getElementById('chapter-title');
         const uiChapterDesc = document.getElementById('chapter-desc');
         const uiChapterIcon = document.getElementById('chapter-icon-large');
-        const prevBtn = document.getElementById('prev-btn');
-        const nextBtn = document.getElementById('next-btn');
-
         let currentChapterIndex = 0;
 
-        // Render the Horizontal Roadmap Board
         function renderRoadmap() {
             roadmapContainer.innerHTML = '';
-            
-            chaptersData.forEach((chapter, index) => {
-                // Column Wrapper
+            rawData.forEach((chapter, index) => {
                 const col = document.createElement('div');
                 col.className = 'flex-none w-[280px] snap-center group cursor-pointer transition-transform hover:-translate-y-1';
                 col.onclick = () => openChapter(index);
                 
-                // Top Node Design
                 const topNode = `
                     <div class="relative bg-white border border-orange-200 rounded-t-xl p-4 flex flex-col items-center shadow-sm group-hover:bg-orange-50 transition-colors z-10">
-                        <div class="w-14 h-14 bg-white rounded-full flex items-center justify-center text-claude-500 shadow-md border border-orange-100 mb-3 text-2xl group-hover:scale-110 transition-transform">
-                            <i class="fa-solid ${chapter.icon}"></i>
-                        </div>
-                        <span class="text-xs font-bold text-gray-500 mb-1">${chapter.id}. ${chapter.title}</span>
+                        <div class="w-14 h-14 bg-white rounded-full flex items-center justify-center text-claude-500 shadow-md border border-orange-100 mb-3 text-2xl group-hover:scale-110 transition-transform"><i class="fa-solid ${chapter.icon}"></i></div>
+                        <span class="text-xs font-bold text-gray-500 mb-1">STEP ${chapter.id}. ${chapter.title}</span>
                         <span class="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">${chapter.range}</span>
-                    </div>
-                `;
-
-                // connecting arrow to next node (hidden on last item)
-                const arrow = index < chaptersData.length - 1 ? 
-                    `<div class="absolute top-10 -right-4 w-8 h-0.5 bg-gray-300 z-0 hidden md:block">
-                        <i class="fa-solid fa-chevron-right absolute -right-1 -top-1.5 text-gray-400 text-xs"></i>
-                     </div>` : '';
-
-                // List Items (1 to 10 mapped)
-                let listHtml = '<div class="bg-white border-l border-r border-orange-200 p-4 h-[320px] overflow-y-auto custom-scrollbar">';
-                listHtml += '<ul class="space-y-3 text-sm text-gray-700">';
-                chapter.items.forEach(item => {
-                    listHtml += `<li class="flex items-start"><span class="text-xs font-bold text-gray-400 w-5 mt-0.5 flex-shrink-0">${item.num}</span><span class="leading-tight hover:text-claude-500 transition-colors">${item.title}</span></li>`;
+                    </div>`;
+                const arrow = index < rawData.length - 1 ? `<div class="absolute top-10 -right-4 w-8 h-0.5 bg-gray-300 z-0 hidden md:block"><i class="fa-solid fa-chevron-right absolute -right-1 -top-1.5 text-gray-400 text-xs"></i></div>` : '';
+                
+                let listHtml = '<div class="bg-white border-l border-r border-orange-200 p-4 h-[320px] overflow-y-auto custom-scrollbar"><ul class="space-y-3 text-sm text-gray-700">';
+                chapter.items.forEach((item, i) => {
+                    let num = (index * 10) + (i + 1);
+                    listHtml += `<li class="flex items-start"><span class="text-xs font-bold text-gray-400 w-5 mt-0.5 flex-shrink-0">${num}</span><span class="leading-tight group-hover:text-claude-600 transition-colors">${item.title}</span></li>`;
                 });
                 listHtml += '</ul></div>';
-
-                // Bottom Goal Box
-                const goalBox = `
-                    <div class="bg-orange-50 border border-orange-200 rounded-b-xl p-3 text-center shadow-sm group-hover:bg-claude-500 group-hover:text-white group-hover:border-claude-500 transition-colors">
-                        <span class="block text-xs font-bold mb-1 opacity-70">목표:</span>
-                        <span class="text-sm font-bold leading-tight break-keep">${chapter.goal}</span>
-                    </div>
-                `;
-
+                
+                const goalBox = `<div class="bg-orange-50 border border-orange-200 rounded-b-xl p-3 text-center shadow-sm group-hover:bg-claude-500 group-hover:text-white group-hover:border-claude-500 transition-colors"><span class="block text-xs font-bold mb-1 opacity-70">목표:</span><span class="text-sm font-bold leading-tight break-keep">${chapter.goal}</span></div>`;
+                
                 col.innerHTML = `<div class="relative">${topNode}${arrow}</div>${listHtml}${goalBox}`;
                 roadmapContainer.appendChild(col);
             });
         }
 
-        // Render Detail View with all 10 items fully expanded
         function openChapter(index) {
             currentChapterIndex = index;
-            const chapter = chaptersData[index];
+            const chapter = rawData[index];
             
-            // Update Headers
-            uiChapterBadge.innerText = `STEP ${chapter.id}`;
-            uiDetailRange.innerText = `상세 단계: ${chapter.range}`;
+            uiChapterBadge.innerText = `STEP ${chapter.id} (${chapter.range})`;
             uiChapterTitle.innerText = `제${chapter.id}장. ${chapter.title}`;
             uiChapterDesc.innerText = chapter.goal;
             uiChapterIcon.className = `fa-solid ${chapter.icon}`;
-            document.getElementById('current-chapter-title').innerText = `제${chapter.id}장. ${chapter.title}`;
+            document.getElementById('current-chapter-title').innerText = `제${chapter.id}장`;
             
-            // Generate Exhaustive Content
             let htmlContent = '';
-            chapter.items.forEach(item => {
+            chapter.items.forEach((item, i) => {
+                let num = (index * 10) + (i + 1);
+                let diagramHtml = renderDiagram(item);
+                let formattedExample = item.example.replace(/\n/g, '<br>');
+
                 htmlContent += `
-                    <div class="item-block bg-white group">
-                        <div class="item-title">
-                            <span class="item-number group-hover:bg-claude-600 transition-colors">${item.num}</span>
-                            <h3 class="group-hover:text-claude-600 transition-colors">${item.title}</h3>
+                    <div class="item-block" onclick="toggleAccordion(this)">
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center">
+                                <span class="item-number">${num}</span>
+                                <h3 class="text-lg font-bold text-gray-800 transition-colors group-hover:text-claude-600">${item.title}</h3>
+                            </div>
+                            <i class="fa-solid fa-chevron-down text-gray-400 chevron-icon text-sm"></i>
                         </div>
-                        <p class="item-desc pl-[2.75rem]">${item.desc}</p>
+                        <p class="text-gray-500 pl-[2.95rem] mt-1 text-sm">${item.desc}</p>
+                        
+                        <div class="item-details pl-2 md:pl-[2.95rem]" onclick="event.stopPropagation()">
+                            <div class="mt-2 mb-4">
+                                <h4 class="text-xs font-bold text-claude-600 mb-2 uppercase tracking-wider"><i class="fa-solid fa-circle-info mr-1"></i> 상세 설명</h4>
+                                <p class="text-sm text-gray-700 leading-relaxed font-medium bg-white p-4 rounded-lg border border-gray-100 shadow-sm">${item.detail}</p>
+                            </div>
+                            
+                            <!-- 개별 맞춤형 도식화 출력 -->
+                            ${diagramHtml}
+                            
+                            <div class="mt-4 bg-gray-800 rounded-xl overflow-hidden shadow-md">
+                                <div class="bg-gray-900 px-4 py-2 border-b border-gray-700 flex items-center">
+                                    <i class="fa-solid fa-terminal text-green-400 text-xs mr-2"></i>
+                                    <span class="text-xs font-bold text-gray-300">실전 예시 / 프롬프트</span>
+                                </div>
+                                <div class="p-4 text-sm text-gray-200 font-mono leading-relaxed bg-[#1e1e1e]">
+                                    ${formattedExample}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 `;
             });
             chapterContent.innerHTML = htmlContent;
             
-            // Toggle Visibility
             homeView.classList.add('hidden');
             chapterView.classList.remove('hidden');
-            breadcrumb.classList.remove('hidden');
+            document.getElementById('breadcrumb').classList.remove('hidden');
             window.scrollTo(0, 0);
             
-            // Button Logic
+            setTimeout(() => {
+                const firstItem = document.querySelector('.item-block');
+                if(firstItem) toggleAccordion(firstItem);
+            }, 100);
+            
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
             prevBtn.style.visibility = index === 0 ? 'hidden' : 'visible';
-            if (index === chaptersData.length - 1) {
+            if (index === rawData.length - 1) {
                 nextBtn.innerHTML = `로드맵 홈 <i class="fa-solid fa-flag-checkered ml-2"></i>`;
                 nextBtn.onclick = goHome;
-                nextBtn.classList.replace('bg-claude-500', 'bg-gray-800');
-                nextBtn.classList.replace('hover:bg-claude-600', 'hover:bg-gray-900');
+                nextBtn.className = "px-8 py-3 bg-gray-800 text-white rounded-xl font-bold hover:bg-gray-900 transition-all shadow-md flex items-center";
             } else {
                 nextBtn.innerHTML = `다음 단계 <i class="fa-solid fa-chevron-right ml-2"></i>`;
                 nextBtn.onclick = () => navigateChapter(1);
-                nextBtn.classList.replace('bg-gray-800', 'bg-claude-500');
-                nextBtn.classList.replace('hover:bg-gray-900', 'hover:bg-claude-600');
+                nextBtn.className = "px-8 py-3 bg-claude-500 text-white rounded-xl font-bold hover:bg-claude-600 transition-all shadow-md flex items-center";
+            }
+        }
+
+        function toggleAccordion(element) {
+            const allBlocks = document.querySelectorAll('.item-block');
+            allBlocks.forEach(block => {
+                if(block !== element && block.classList.contains('expanded')) block.classList.remove('expanded');
+            });
+            element.classList.toggle('expanded');
+            if(element.classList.contains('expanded')){
+                setTimeout(() => { element.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 300);
             }
         }
 
         function navigateChapter(direction) {
             const newIndex = currentChapterIndex + direction;
-            if (newIndex >= 0 && newIndex < chaptersData.length) {
-                openChapter(newIndex);
-            }
+            if (newIndex >= 0 && newIndex < rawData.length) openChapter(newIndex);
         }
 
         function goHome() {
             chapterView.classList.add('hidden');
             homeView.classList.remove('hidden');
-            breadcrumb.classList.add('hidden');
+            document.getElementById('breadcrumb').classList.add('hidden');
             window.scrollTo(0, 0);
         }
-
-        // Custom CSS for internal vertical scrollbars
-        const style = document.createElement('style');
-        style.innerHTML = `
-            .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-            .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-            .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 4px; }
-            .custom-scrollbar:hover::-webkit-scrollbar-thumb { background: #cbd5e1; }
-        `;
-        document.head.appendChild(style);
 
         document.addEventListener('DOMContentLoaded', renderRoadmap);
     </script>
